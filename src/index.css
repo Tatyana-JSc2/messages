@@ -1,0 +1,107 @@
+:root {
+  /* --text: #9ca3af; */
+  --text: #effdf8;
+    /* --text-h: #f3f4f6; */
+    --text-h: #f4584d;
+    --text-h1:#f8665b;
+    --text-h2: #effdf8;
+    --text-h3: #67e6d2;
+    --text-h4: #5ccaba;
+    --text-h5: #bc8581;
+    --text-h6: #f88279;
+    --text-h7: #6c8a85;
+    /* --bg: #16171d; */
+    --bg: rgba(63, 77, 77, 0.5);
+    --border: #465758;
+    --code-bg: #394749;
+    /* --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-border: rgba(192, 132, 252, 0.5); */
+    --accent: #fbedd9;
+    --accent-bg:  #f5382b;
+    --accent-bg2:  #f92112;
+    --accent-border: #fc8484;
+    --social-bg: rgba(76, 92, 91, 0.5);
+    --shadow:
+      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  /* background-image: url('./i.jpg');
+  background-size: cover; */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+/* @media (prefers-color-scheme: dark) {
+  здесь могут быть цвета для темной темы
+} */
+
+body {
+  margin: 0;
+}
+
+#root {
+  width: 1126px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  border-inline: 1px solid var(--border);
+  min-height: 100svh;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  /* align-items: center; */
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h1);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+  @media (max-width: 1024px) {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+}
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+p {
+  margin: 0;
+}
+
+
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
