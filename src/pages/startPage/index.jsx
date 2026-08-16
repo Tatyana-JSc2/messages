@@ -6,7 +6,7 @@
  import Contacts from '../../dataContacts';
  
 
-function StartPage({indexMessage, indexContact}) {
+function StartPage({indexMessage, indexContact, setIndexMessage, setIndexContact }) {
   const SameText = Messages.find(message => message.id === indexMessage)?.text;
   const SamePhone = Contacts.find(contact => contact.id === indexContact)?.phone;
   const [messageText, setMessageText] = useState(indexMessage? SameText:'');
@@ -19,12 +19,14 @@ function StartPage({indexMessage, indexContact}) {
       alert('Заполните все поля!');
       return;
     }
-    console.log(`проверка "${indexMessage}" проверка "${SameText}"`);
-    console.log(`Отправка сообщения "${messageText}" на номер ${phoneNumber}`);
+    // console.log(`проверка id mess "${indexMessage}" проверка текст mess"${SameText}"`);
+    // console.log(`Отправка сообщения "${messageText}" на номер ${phoneNumber}`);
     // Здесь будет вызов API для отправки SMS
     alert('Сообщение отправлено!');
     setMessageText('');
     setPhoneNumber('');
+    setIndexMessage('');
+    setIndexContact('');
   };
 
 

@@ -71,7 +71,9 @@ li {
       box-shadow: var(--shadow);
       background-color: var(--border)
     }
-    
+
+   
+
   }
 
   @media (max-width: 1024px) {
@@ -98,5 +100,6 @@ li {
   flex-grow: 1;
   padding-top: 20px;
 }
+
 
 

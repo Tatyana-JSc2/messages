@@ -10,8 +10,9 @@ function ContactPage({setIndexContact}) {
 
   const handleChangeContact = () => {
     
-    console.log(`id cont изменен на "${idChange}" `);
+    // console.log(`id cont изменен на "${idChange}" `);
      setIndexContact(idChange);
+     
     
   };
 
@@ -21,7 +22,10 @@ function ContactPage({setIndexContact}) {
         <div id="contactMainBlock" className='contactMainBlock'>
           <h2>Список контактов</h2>
           {Contacts.map((contact) => (
-        <li className='contactLi' key={contact.id} onClick={() => setIDChange(contact.id)} >
+        <li className='contactLi'
+        style={{backgroundColor: contact.id===idChange? ` rgb(98, 111, 110)` : '', color: contact.id===idChange? ` #fea8a2` : ''}} 
+        key={contact.id} 
+        onClick={() => setIDChange(contact.id)} >
           {contact.name}    {contact.phone}
         </li>
       ))}

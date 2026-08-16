@@ -12,7 +12,7 @@ export const AppRoutes = ()=> {
 
   return (
     <Routes>
-        <Route path="/" element={<StartPage indexMessage={indexMessage} indexContact={indexContact} ></StartPage>}/>
+        <Route path="/" element={<StartPage indexMessage={indexMessage} indexContact={indexContact} setIndexMessage={setIndexMessage} setIndexContact={setIndexContact}></StartPage>}/>
         <Route path="/contactPage" element={<ContactPage setIndexContact={setIndexContact} ></ContactPage>}/>
         <Route path="/messagePage" element={<MessagePage setIndexMessage={setIndexMessage} ></MessagePage>}/>
         <Route path="*" element={<NotFoundPage></NotFoundPage>}/>

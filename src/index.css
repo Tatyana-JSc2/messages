@@ -4,11 +4,11 @@
     /* --text-h: #f3f4f6; */
     --text-h: #f4584d;
     --text-h1:#f8665b;
-    --text-h2: #effdf8;
+    --text-h2: #a6f8ec;
     --text-h3: #67e6d2;
     --text-h4: #5ccaba;
-    --text-h5: #bc8581;
-    --text-h6: #f88279;
+    --text-h5: #faa49e;
+    --text-h6: #b57b77;
     --text-h7: #6c8a85;
     /* --bg: #16171d; */
     --bg: rgba(63, 77, 77, 0.5);
@@ -18,9 +18,9 @@
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5); */
     --accent: #fbedd9;
-    --accent-bg:  #f5382b;
-    --accent-bg2:  #f92112;
-    --accent-border: #fc8484;
+    --accent-bg:  #e5635a;
+    --accent-bg2:  #fa4b3e;
+    --accent-border: #f5c6c6;
     --social-bg: rgba(76, 92, 91, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;

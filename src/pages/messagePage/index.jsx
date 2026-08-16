@@ -6,11 +6,14 @@ import { Link } from 'react-router-dom';
 
 function MessagePage({setIndexMessage}) {
   const [idChange, setIDChange] = useState(null);
+ 
+
 
 const handleChangeMessage = () => {
     
-    console.log(`id изменен на "${idChange}" `);
+    // console.log(`id mess изменен на "${idChange}" `);
      setIndexMessage(idChange);
+     
     
   };
 
@@ -24,7 +27,10 @@ const handleChangeMessage = () => {
             
             {Messages.map((message) => (
                 // Важно: каждый элемент в цикле должен иметь уникальный ключ \`key\`
-                <li className='messageLi' key={message.id} onClick={() => setIDChange(message.id)} >{message.text}</li>
+                <li /*className='messageLi'*/
+                style={{backgroundColor: message.id===idChange? ` rgb(98, 111, 110)` : '', color: message.id===idChange? ` #fea8a2` : ''}} 
+                key={message.id} 
+                onClick={() => {setIDChange(message.id)}} >{message.text}</li>
             ))}
         </ul>
     

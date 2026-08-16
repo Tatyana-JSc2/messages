@@ -53,6 +53,7 @@ li {
 
     &:hover {
       box-shadow: var(--shadow);
+      color: var(--text-h2);
     }
     
   }
