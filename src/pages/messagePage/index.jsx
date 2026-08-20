@@ -23,8 +23,7 @@ const handleChangeMessage = () => {
      <section id="center">
         <div id="messageMainBlock" className='messageMainBlock'>
           <h2>Шаблоны текстовых сообщений</h2>
-          <ul>
-            
+          <ul>           
             {Messages.map((message) => (
                 // Важно: каждый элемент в цикле должен иметь уникальный ключ \`key\`
                 <li /*className='messageLi'*/

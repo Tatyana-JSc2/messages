@@ -8,11 +8,15 @@
 
 function StartPage({indexMessage, indexContact, setIndexMessage, setIndexContact }) {
   const SameText = Messages.find(message => message.id === indexMessage)?.text;
-  const SamePhone = Contacts.find(contact => contact.id === indexContact)?.phone;
+  const SamePhone = () => {
+    const indexSet = new Set(indexContact);
+    const matchedContacts = Contacts.filter(contact => indexSet.has(contact.id));
+    const phonesArray = matchedContacts.map(contact => contact.phone);
+    return phonesArray.join('; '); 
+}
   const [messageText, setMessageText] = useState(indexMessage? SameText:'');
-  const [phoneNumber, setPhoneNumber] = useState(indexContact? SamePhone:'');
+  const [phoneNumber, setPhoneNumber] = useState(indexContact? SamePhone():'');
 
-  
 
   const handleSendMessage = () => {
     if (!messageText || !phoneNumber) {
@@ -20,7 +24,7 @@ function StartPage({indexMessage, indexContact, setIndexMessage, setIndexContact
       return;
     }
     // console.log(`проверка id mess "${indexMessage}" проверка текст mess"${SameText}"`);
-    // console.log(`Отправка сообщения "${messageText}" на номер ${phoneNumber}`);
+     console.log(`Отправка сообщения "${messageText}" на номер ${phoneNumber}`);
     // Здесь будет вызов API для отправки SMS
     alert('Сообщение отправлено!');
     setMessageText('');
@@ -44,8 +48,7 @@ function StartPage({indexMessage, indexContact, setIndexMessage, setIndexContact
           className="formGroupInput"
           type="text"
           value={ messageText}
-          onChange={(e)=>setMessageText(e.target.value)}
-          // onChange={ChangeText}
+          onChange={(e)=>setMessageText(e.target.value)}         
           placeholder="Введите текст сообщения..."
         />
         <ul>

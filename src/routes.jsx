@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 export const AppRoutes = ()=> {
    const [indexMessage, setIndexMessage] = useState(null);
-   const [indexContact, setIndexContact] = useState(null);
+   const [indexContact, setIndexContact] = useState([]);
 
 
   return (
