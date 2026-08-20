@@ -6,14 +6,12 @@ import { useState} from 'react';
 
 
 function ContactPage({setIndexContact}) {
-  // const [idChange, setIDChange] = useState(null);
  
  const [items, setItems] = useState(Contacts);
   
 
   const handleChangeContact = () => {
-    // console.log(`id cont изменен на "${idChange}" `);
-    // console.log(`id cont изменен на "${act}" `);
+    // console.log(`id cont изменен на "${idChange}" `);  
     const contactListId = items.filter(item => item.active).map(el => el.id);
     console.log(contactListId);   
      setIndexContact(contactListId);   
@@ -24,8 +22,7 @@ function ContactPage({setIndexContact}) {
     setItems (prevItems => 
       prevItems.map((item) => {
   // Если находим нужного пользователя, возвращаем новый объект с изменениями
-     if (item.id === id) {   
-      // setIDChange(id);
+     if (item.id === id) {       
       return { ...item, active: !item.active }; 
     }
   // Для остальных просто возвращаем оригинальный объект
