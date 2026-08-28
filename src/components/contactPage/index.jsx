@@ -1,5 +1,5 @@
 import './style.css'
-// import Navigation from '../../components/navigation';
+// import Navigation from '../navigation';
 import Contacts from '../../dataContacts';
 import { Link } from 'react-router-dom';
 import { useState} from 'react';
