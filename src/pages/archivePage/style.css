@@ -1,0 +1,87 @@
+.archiveSection {
+  padding: 24px;
+  flex: 1;
+
+  h2 {
+    margin-bottom: 24px;
+  }
+}
+
+.emptyMessage {
+  text-align: center;
+  color: var(--text);
+  font-style: italic;
+  padding: 40px 0;
+}
+
+.archiveTableWrapper {
+  overflow-x: auto;
+}
+
+.archiveTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    background: var(--social-bg);
+    color: var(--text-h6);
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    color: var(--text);
+    font-size: 15px;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  .deleteButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #f87171;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(248, 113, 113, 0.15);
+    }
+  }
+}
+
+.backLink {
+  display: inline-block;
+  margin-top: 24px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  padding: 10px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: border-color 0.3s;
+
+  &:hover {
+    border-color: var(--accent-border);
+    background: var(--accent-bg2);
+  }
+}

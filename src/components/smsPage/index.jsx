@@ -1,31 +1,85 @@
 import './style.css'
-//  import Navigation from '../navigation';
- import { Link } from 'react-router-dom';
- import { useState } from 'react';
- import Messages from '../../dataMessages';
- import Contacts from '../../dataContacts';
- 
+import { useState, useEffect, useRef } from 'react';
+import Contacts from '../../dataContacts';
 
-function SmsPage({indexMessage, indexContact, setIndexMessage, setIndexContact }) {
-  const SameText = Messages.find(message => message.id === indexMessage)?.text;
-  const SamePhone = () => {
-    const indexSet = new Set(indexContact);
-    const matchedContacts = Contacts.filter(contact => indexSet.has(contact.id));
-    const phonesArray = matchedContacts.map(contact => contact.phone);
-    return phonesArray.join('; '); 
+const STORAGE_KEY = 'sentMessages';
+
+function getSentMessages() {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
 }
-  const [messageText, setMessageText] = useState(indexMessage? SameText:'');
-  const [phoneNumber, setPhoneNumber] = useState(indexContact? SamePhone():'');
 
+function saveSentMessage(message) {
+  const messages = getSentMessages();
+  messages.push(message);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+}
+
+function parsePhoneNumbers(phoneString) {
+  return phoneString.split(';').map(p => p.trim()).filter(p => p.length > 0);
+}
+
+function findContactNames(phones) {
+  const names = [];
+  phones.forEach(phone => {
+    const contact = Contacts.find(c => c.phone === phone);
+    if (contact) {
+      names.push(contact.name);
+    } else {
+      names.push('Неизвестный');
+    }
+  });
+  return names;
+}
+
+function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selectedPhone, isActive, setActiveComponent }) {
+  const [messageText, setMessageText] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const prevSelectedTextRef = useRef(null);
+  const prevSelectedPhoneRef = useRef(null);
+
+  useEffect(() => {
+    if (selectedMessageText !== prevSelectedTextRef.current) {
+      setMessageText(selectedMessageText);
+      prevSelectedTextRef.current = selectedMessageText;
+    }
+  }, [selectedMessageText]);
+
+  useEffect(() => {
+    if (selectedPhone !== prevSelectedPhoneRef.current) {
+      setPhoneNumber(selectedPhone);
+      prevSelectedPhoneRef.current = selectedPhone;
+    }
+  }, [selectedPhone]);
 
   const handleSendMessage = () => {
     if (!messageText || !phoneNumber) {
       alert('Заполните все поля!');
       return;
     }
-    // console.log(`проверка id mess "${indexMessage}" проверка текст mess"${SameText}"`);
-     console.log(`Отправка сообщения "${messageText}" на номер ${phoneNumber}`);
-    // Здесь будет вызов API для отправки SMS
+
+    const phones = parsePhoneNumbers(phoneNumber);
+    const contactNames = findContactNames(phones);
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('ru-RU');
+    const timeStr = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+    const sentMessage = {
+      text: messageText,
+      phones: phones,
+      contactNames: contactNames,
+      date: dateStr,
+      time: timeStr,
+      timestamp: now.getTime()
+    };
+
+    saveSentMessage(sentMessage);
+    console.log('Отправленное сообщение:', sentMessage);
+
     alert('Сообщение отправлено!');
     setMessageText('');
     setPhoneNumber('');
@@ -33,67 +87,68 @@ function SmsPage({indexMessage, indexContact, setIndexMessage, setIndexContact }
     setIndexContact('');
   };
 
-
   return (
     <>
-   
-      <section id="center">
-        <div id="mainBlock" className='mainBlock'>
-          <h2>Создание и отправка SMS-сообщений</h2>
-      
-      <div className="formGroup">
-        
-        <textarea
-        
-          className="formGroupInput"
-          type="text"
-          value={ messageText}
-          onChange={(e)=>setMessageText(e.target.value)}         
-          placeholder="Введите текст сообщения..."
-        />
-        <ul>
-            <li >
-              <Link className="formGroupLink" to="/messagePage"> 
-               Выбрать шаблонный текст
-              </Link>
-            </li>
-        </ul>
-        
-      </div>
+      <section className="smsCenter">
+        <h2>Создание и отправка SMS-сообщений</h2>
+        {isActive && (
+          <>
+            <div id="mainBlock" className='mainBlock'>
+              <div className="formGroup">
+                <textarea
+                  className="formGroupInput"
+                  type="text"
+                  value={messageText}
+                  onChange={(e) => setMessageText(e.target.value)}
+                  placeholder="Введите текст сообщения..."
+                />
+                <ul>
+                  <li>
+                    <span
+                      className="formGroupLink"
+                      onClick={(e) => { e.stopPropagation(); setActiveComponent('message'); }}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      Выбрать шаблонный текст
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-      <div className="formGroup">
-        
-        <textarea
-          className="formGroupInput"
-          type="tel"
-          value={phoneNumber}
-          onChange={(e)=>setPhoneNumber(e.target.value)}
-          placeholder="+7XXXXXXXXXX"
-        />
-        <ul>
-            <li >
-              <Link className="formGroupLink" to="/contactPage"> 
-               Выбрать адресата из списка
-              </Link>
-            </li>
-        </ul>
-        
-      </div>
+              <div className="formGroup">
+                <textarea
+                  className="formGroupInput"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="+7XXXXXXXXXX"
+                />
+                <ul>
+                  <li>
+                    <span
+                      className="formGroupLink"
+                      onClick={(e) => { e.stopPropagation(); setActiveComponent('contact'); }}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      Выбрать адресата из списка
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-          
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => handleSendMessage()}
-        >Отправить сообщение
-        </button>
+            </div>
+            <button
+              type="button"
+              className="counter"
+              onClick={() => handleSendMessage()}
+            >Отправить сообщение
+            </button>
+          </>
+        )}
       </section>
 
-     
-
-      {/* <Navigation></Navigation> */}
     </>
   )
-     }
+}
+
 export default SmsPage;

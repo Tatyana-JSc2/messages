@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import StartPage from './pages/startPage'
+import ArchivePage from './pages/archivePage'
 // import ContactPage from './pages/contactPage'
 // import MessagePage from './pages/messagePage'
 import NotFoundPage from './pages/notFoundPage'
@@ -13,8 +14,7 @@ export const AppRoutes = ()=> {
   return (
     <Routes>
         <Route path="/" element={<StartPage /*indexMessage={indexMessage} indexContact={indexContact} setIndexMessage={setIndexMessage} setIndexContact={setIndexContact}*/></StartPage>}/>
-        {/* <Route path="/contactPage" element={<ContactPage setIndexContact={setIndexContact} ></ContactPage>}/>
-        <Route path="/messagePage" element={<MessagePage setIndexMessage={setIndexMessage} ></MessagePage>}/> */}
+        <Route path="/archivePage" element={<ArchivePage></ArchivePage>}/>
         <Route path="*" element={<NotFoundPage></NotFoundPage>}/>
     </Routes>
     

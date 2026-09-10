@@ -13,6 +13,7 @@
   transition: border-color 0.3s;
   margin-top: 20px;
   text-decoration: none;
+  cursor: pointer;
 
   &:hover {
     border-color: var(--accent-border);
@@ -26,19 +27,38 @@
 
 
 
-#center {
+
+.messageCenter {
   /* width: 100%; */
   display: flex;
   flex-direction: column;
   gap: 25px;
   flex-grow: 1;
+  height: 100%;
 
   @media (max-width: 1024px) {
     padding: 32px 20px 24px;
     gap: 18px;
     
   }
+
+  h2 {
+    transition: font-size 0.7s ease;
+  }
 }
+
+.workspaceColumn.active .messageCenter {
+  justify-content: space-between;
+}
+
+.workspaceColumn:not(.active) .messageCenter h2 {
+  font-size: 0.8em;
+}
+
+.workspaceColumn:not(.active) .messageCenter {
+  justify-content: center;
+}
+
 
 
 
@@ -53,7 +73,9 @@
       justify-content: center;
       
 li {
-      flex: 1 1 calc(100% - 8px);
+      flex: 1 1 calc(80% - 8px);
+      width: 80%;
+      margin: 0 auto;
     color: var(--text-h6);
     font-size: 16px;
     border-radius: 6px;
@@ -72,8 +94,61 @@ li {
       background-color: var(--border)
     }
 
-   
+    &.selected {
+      box-shadow: var(--shadow);
+    }
 
+    .templateText {
+      flex: 1;
+      text-align: center;
+    }
+
+    .editButton {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      &.deleteButton:hover {
+        background: rgba(255, 0, 0, 0.3);
+      }
+
+      &.saveButton {
+        color: #4ade80;
+      }
+
+      &.cancelButton {
+        color: #f87171;
+      }
+    }
+
+    .editInput {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 16px;
+      color: inherit;
+      outline: none;
+    }
+  }
+
+  .emptyMessage {
+    flex: 1 1 calc(80% - 8px);
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--text);
+    font-style: italic;
+    padding: 20px 12px;
   }
 
   @media (max-width: 1024px) {
@@ -88,7 +163,43 @@ li {
   }
 }
 
+.addRow {
+  display: flex;
+  gap: 8px;
+  width: 80%;
+  margin: 0 auto;
 
+  .newTextInput {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 16px;
+    background: var(--social-bg);
+    color: var(--text);
+    outline: none;
+
+    &:focus {
+      border-color: var(--accent);
+    }
+  }
+
+  .addButton {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.3s;
+
+    &:hover {
+      background: var(--accent-bg2);
+      border-color: var(--accent-border);
+    }
+  }
+}
 
 .messageMainBlock{
   /* width: 80%; */

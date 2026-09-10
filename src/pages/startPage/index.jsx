@@ -1,18 +1,18 @@
- import './style.css'
-//  import Navigation from '../../components/navigation';
- import SmsPage from '../../components/smsPage';
- import MessagePage from '../../components/messagePage';
- import ContactPage from '../../components/contactPage';
-//  import { Link } from 'react-router-dom';
- import { useState } from 'react';
-//  import Messages from '../../dataMessages';
-//  import Contacts from '../../dataContacts';
+import './style.css'
+import SmsPage from '../../components/smsPage';
+import MessagePage from '../../components/messagePage';
+import ContactPage from '../../components/contactPage';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
  
 
 function StartPage() {
   const [indexMessage, setIndexMessage] = useState(null);
    const [indexContact, setIndexContact] = useState([]);
+   const [selectedMessageText, setSelectedMessageText] = useState('');
+   const [selectedPhone, setSelectedPhone] = useState('');
+   const [activeComponent, setActiveComponent] = useState('sms');
 
   // const SameText = Messages.find(message => message.id === indexMessage)?.text;
   // const SamePhone = () => {
@@ -46,75 +46,27 @@ function StartPage() {
    
        <section className='section'>
         <header className='topbar'>
-<div className='topbarTitle'>
-<h2>SMS-сообщения</h2>
-<p>создание и отправка текстовых сообщений</p>
-</div>
+           <div className='topbarTitle'>
+             <h2>SMS-сообщения</h2>
+             <p>создание и отправка текстовых сообщений</p>
+           </div>
         </header>
-        <main className='main'>
-<div className='mainWorkSpace'>
-<SmsPage indexMessage={indexMessage} indexContact={indexContact} setIndexMessage={setIndexMessage} setIndexContact={setIndexContact}></SmsPage>
-     <MessagePage setIndexMessage={setIndexMessage}></MessagePage>
-     <ContactPage setIndexContact={setIndexContact}></ContactPage>
-</div>
-        </main>
-        {/* <div id="mainBlock" className='mainBlock'>
-          <h2>Создание и отправка SMS-сообщений</h2>
-      
-      <div className="formGroup">
-        
-        <textarea
-        
-          className="formGroupInput"
-          type="text"
-          value={ messageText}
-          onChange={(e)=>setMessageText(e.target.value)}         
-          placeholder="Введите текст сообщения..."
-        />
-        <ul>
-            <li >
-              <Link className="formGroupLink" to="/messagePage"> 
-               Выбрать шаблонный текст
-              </Link>
-            </li>
-        </ul>
-        
-      </div>
-
-      <div className="formGroup">
-        
-        <textarea
-          className="formGroupInput"
-          type="tel"
-          value={phoneNumber}
-          onChange={(e)=>setPhoneNumber(e.target.value)}
-          placeholder="+7XXXXXXXXXX"
-        />
-        <ul>
-            <li >
-              <Link className="formGroupLink" to="/contactPage"> 
-               Выбрать адресата из списка
-              </Link>
-            </li>
-        </ul>
-        
-      </div>
-
-          
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => handleSendMessage()}
-        >Отправить сообщение
-        </button> */}
-
-        
-      </section> 
-
-     
-
-      {/* <Navigation></Navigation> */}
+         <main className='main'>
+           <div className={`mainWorkSpace ${activeComponent === 'sms' ? 'smsActive' : ''} ${activeComponent === 'message' ? 'messageActive' : ''} ${activeComponent === 'contact' ? 'contactActive' : ''}`}>
+             <div className={`workspaceColumn ${activeComponent === 'sms' ? 'active' : ''}`} onClick={() => setActiveComponent('sms')}>
+               <SmsPage indexMessage={indexMessage} indexContact={indexContact} setIndexMessage={setIndexMessage} setIndexContact={setIndexContact} selectedMessageText={selectedMessageText} selectedPhone={selectedPhone} isActive={activeComponent === 'sms'} setActiveComponent={setActiveComponent}></SmsPage>
+             </div>
+             <div className={`workspaceColumn ${activeComponent === 'message' ? 'active' : ''}`} onClick={() => setActiveComponent('message')}>
+               <MessagePage setIndexMessage={setIndexMessage} setSelectedMessageText={setSelectedMessageText} setActiveComponent={setActiveComponent} isActive={activeComponent === 'message'}></MessagePage>
+             </div>
+             <div className={`workspaceColumn ${activeComponent === 'contact' ? 'active' : ''}`} onClick={() => setActiveComponent('contact')}>
+               <ContactPage setIndexContact={setIndexContact} setSelectedPhone={setSelectedPhone} setActiveComponent={setActiveComponent} isActive={activeComponent === 'contact'}></ContactPage>
+             </div>
+           </div>
+         </main>
+          <Link to="/archivePage" className='archiveLink'>Архив отправленных сообщений</Link>
+      </section>
+      {/* <Link to="/archivePage" className='archiveLink'>Архив отправленных сообщений</Link> */}
     </>
   )
 }

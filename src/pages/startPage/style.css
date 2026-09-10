@@ -18,23 +18,72 @@ min-width: 0;
 height: 100vh;
 min-height: 0;
 overflow: hidden;
+display: flex;
+flex-direction: column;
 }
 
 .main {
   /* min-width: 1760px; */
-  height: calc(100hv - 64px);
+  flex: 1;
   margin: 0 auto;
   padding: 12px 18px 16px;
   position: relative;
   overflow: hidden;
+  background-color: #f3f6f8;
+  height: calc(100vh - 64px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .mainWorkSpace {
   display: grid;
-  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  grid-template-columns: 0.7fr 0.7fr 0.7fr;
   gap: 11px;
+  height: calc(100% - 28px);
+  justify-content: start;
+  /* align-content: start; */
+  transition: grid-template-columns 0.7s ease;
+
+  &.smsActive {
+    grid-template-columns: 2.1fr 0.7fr 0.7fr;
+  }
+
+  &.messageActive {
+    grid-template-columns: 0.7fr 2.1fr 0.7fr;
+  }
+
+  &.contactActive {
+    grid-template-columns: 0.7fr 0.7fr 2.1fr;
+  }
+}
+
+.workspaceColumn {
+  min-width: 0;
   height: 100%;
-  min-height: 0;
+  border-radius: 13px;
+  background: #ffffff;
+  border: 1px solid #e3e9ed;
+  cursor: pointer;
+  transition: background-color 0.7s ease, height 0.7s ease, transform 0.7s ease;
+  overflow: hidden;
+  transform-origin: top center;
+
+  &.active {
+    background: #ffffff;
+    height: 100%;
+    transform: scale(1);
+  }
+
+  &:not(.active) {
+    background: #e2e8ee;
+    height: 80%;
+    margin-top: 0;
+    transform: scale(0.95);
+  }
+}
+
+.workspaceColumn > section {
+  height: 100%;
 }
 
  .topbar {
@@ -52,10 +101,28 @@ overflow: hidden;
  }
 
  .topbarTitle {
-min-width: 0;
-display: block;
-text-align: start;
+ min-width: 0;
+ display: block;
+ text-align: start;
 
 
- }
+  }
+
+  .archiveLink {
+    display: inline-block;
+    margin: 20px auto;
+    padding: 10px 24px;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: var(--accent-border);
+      background: var(--accent-bg2);
+    }
+  }
+
 
