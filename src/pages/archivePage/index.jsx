@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './style.css';
 import { Link } from 'react-router-dom';
 
@@ -18,11 +18,7 @@ function saveSentMessages(messages) {
 }
 
 function ArchivePage() {
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    setMessages(getSentMessages());
-  }, []);
+  const [messages, setMessages] = useState(getSentMessages);
 
   const handleDelete = (index) => {
     const updated = messages.filter((_, i) => i !== index);
@@ -33,6 +29,7 @@ function ArchivePage() {
   return (
     <>
       <section className='archiveSection'>
+        <div className='archiveContent'>
         <h2>Архив отправленных сообщений</h2>
         
         {messages.length === 0 ? (
@@ -69,9 +66,12 @@ function ArchivePage() {
             </table>
           </div>
         )}
-
-        <Link to="/" className='backLink'>← На главную</Link>
+      </div>
+     <div className='backLinkContainer'><br/>
+        <Link to="/" className='backLink'>Главная страница</Link>
+        </div>
       </section>
+      
     </>
   );
 }

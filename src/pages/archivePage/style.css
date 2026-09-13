@@ -1,4 +1,7 @@
 .archiveSection {
+  display:flex;
+  flex-direction: column;
+  justify-content:space-between;
   padding: 24px;
   flex: 1;
 
@@ -33,7 +36,7 @@
 
   th {
     background: var(--social-bg);
-    color: var(--text-h6);
+    color: var(--text-h7);
     font-weight: 600;
     font-size: 14px;
     text-transform: uppercase;
@@ -69,19 +72,24 @@
   }
 }
 
+.backLinkContainer {
+  display:flex;
+  
+}
+
 .backLink {
-  display: inline-block;
-  margin-top: 24px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  padding: 10px 24px;
-  border-radius: 50px;
-  text-decoration: none;
-  font-size: 16px;
-  transition: border-color 0.3s;
+ 
+    display: inline-block;   
+    padding: 20px 32px; 
+    font-size: 18px;
+    transition: border-color 0.3s;
+  color: var(--text-h7);
+  text-decoration: line;
 
   &:hover {
-    border-color: var(--accent-border);
-    background: var(--accent-bg2);
+    /* border-color: var(--accent-border);
+    background: var(--accent-bg2); */
+    color: var(--text-h);
+    
   }
 }

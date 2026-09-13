@@ -30,7 +30,7 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
 
   return (
     <>
-      <section className="contactCenter" onClick={(e) => e.stopPropagation()}>
+      <section className="contactCenter" /*onClick={(e) => e.stopPropagation()}*/>
         <h2>Список контактов</h2>
         {isActive && (
           <>
@@ -38,25 +38,32 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
               <ul>
                 {items.map((item) => (
                   <li className='contactLi'
-                    style={{backgroundColor: item.active ? 'rgb(98, 111, 110)' : '', color: item.active ? '#fea8a2' : ''}}
+                    style={{backgroundColor: item.active ? 'rgb(188, 195, 195)' : '', color: item.active ? 'var(--text-h7)' : ''}}
                     key={item.id}
                     onClick={() => changeItemActive(item.id)}
                   >
-                    {item.name} {item.phone}
+                    <p>{item.name}</p>    <p>{item.phone}</p>
                   </li>
                 ))}
               </ul>
             </div>
-            <Link to="/"
-              type="button"
-              className="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddContacts();
-              }}
-            >
-              Добавить выбранный контакт
-            </Link>
+            <div className="buttonWrapper">
+              <Link to="/"
+                type="button"
+                className="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const activeItems = items.filter(item => item.active);
+                  if (activeItems.length > 0) {
+                    handleAddContacts();
+                  } else {
+                    alert('Выберите контакт из списка!');
+                  }
+                }}
+              >
+                Добавить контакт в СМС-сообщение
+              </Link>
+            </div>
           </>
         )}
       </section>

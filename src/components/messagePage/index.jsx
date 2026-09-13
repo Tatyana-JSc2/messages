@@ -71,21 +71,21 @@ function MessagePage({ setSelectedMessageText, setActiveComponent, isActive }) {
 
   return (
     <>
-      <section className="messageCenter" onClick={(e) => e.stopPropagation()}>
-        <h2>Шаблоны текстовых сообщений</h2>
+      <section className="messageCenter" /*onClick={(e) => e.stopPropagation()}*/>
+        <h2>Список текстовых сообщений</h2>
         {isActive && (
           <>
             <div id="messageMainBlock" className='messageMainBlock'>
               <ul className="templatesList">
                 {templates.length === 0 && (
-                  <li className="emptyMessage">Список сообщений пуст! Добавьте новое сообщение!</li>
+                  <div className="emptyMessage">Список сообщений пуст! Добавьте новое сообщение!</div>
                 )}
                 {templates.map((template) => (
                   <li
                     className={idChange === template.id ? 'selected' : ''}
                     style={{
-                      backgroundColor: template.id === idChange ? 'rgb(98, 111, 110)' : '',
-                      color: template.id === idChange ? '#fea8a2' : ''
+                      backgroundColor: template.id === idChange ? 'rgb(188, 195, 195)' : '',
+                      color: template.id === idChange ? 'var(--text-h7)' : ''
                     }}
                     key={template.id}
                     onClick={() => handleSelect(template)}
@@ -135,7 +135,7 @@ function MessagePage({ setSelectedMessageText, setActiveComponent, isActive }) {
                 ))}
               </ul>
 
-              <div className="addRow">
+              <div className="messageAddRow">
                 <input
                   className="newTextInput"
                   type="text"
@@ -148,22 +148,29 @@ function MessagePage({ setSelectedMessageText, setActiveComponent, isActive }) {
                   Добавить текст в список
                 </button>
               </div>
+
+              
+
             </div>
 
-            <Link
-              to="/"
-              type="button"
-              className="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (selectedTemplate) {
-                  setSelectedMessageText(selectedTemplate.text);
-                  setActiveComponent('sms');
-                }
-              }}
-            >
-              Добавить выбранный текст
-            </Link>
+           <div className="messageLinkWrapper">
+                <Link
+                  to="/"
+                  type="button"
+                  className="messageLink"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (selectedTemplate) {
+                      setSelectedMessageText(selectedTemplate.text);
+                      setActiveComponent('sms');
+                    } else {
+                      alert('Выберите текст из списка!');
+                    }
+                  }}
+                >
+                  Добавить текст в СМС-сообщение
+                </Link>
+              </div>
           </>
         )}
       </section>

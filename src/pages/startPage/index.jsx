@@ -44,7 +44,7 @@ function StartPage() {
   return (
     <>
    
-       <section className='section'>
+       <section className='section hover:bg-red-300 '>
         <header className='topbar'>
            <div className='topbarTitle'>
              <h2>SMS-сообщения</h2>

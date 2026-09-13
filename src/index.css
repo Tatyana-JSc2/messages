@@ -1,15 +1,15 @@
 :root {
   /* --text: #9ca3af; */
-  --text: #8b96a5;
+  --text: #79807f;
     /* --text-h: #f3f4f6; */
-    --text-h: #f4584d;
+    --text-h: #fa4c3f;
     --text-h1:#f8665b;
     --text-h2: #a6f8ec;
     --text-h3: #67e6d2;
     --text-h4: #5ccaba;
     --text-h5: #faa49e;
-    --text-h6: #b57b77;
-    --text-h7: #6c8a85;
+    --text-h6: #beb5b4;
+    --text-h7: #575858;
     /* --bg: #16171d; */
     --bg: #ffffffeb;
     --border: #e2e8ee;
@@ -19,11 +19,12 @@
     --accent-border: rgba(192, 132, 252, 0.5); */
     --accent: #fbedd9;
     --accent-bg:  #e5635a;
-    --accent-bg2:  #fa4b3e;
+    --accent-bg2:  #dedbd9;
     --accent-border: #f5c6c6;
-    --social-bg: rgba(76, 92, 91, 0.5);
+    --social-bg: rgba(202, 205, 205, 0.5);
+    --social-bg2: rgb(161, 164, 164);
     --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+      rgba(124, 123, 123, 0.3) 0 10px 15px -3px, rgba(146, 144, 144, 0.25) 0 4px 6px -2px;
   
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;

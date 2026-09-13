@@ -94,55 +94,50 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
         {isActive && (
           <>
             <div id="mainBlock" className='mainBlock'>
-              <div className="formGroup">
+              <div className="addRow">
                 <textarea
-                  className="formGroupInput"
-                  type="text"
+                  className="newTextInput"
                   value={messageText}
                   onChange={(e) => setMessageText(e.target.value)}
                   placeholder="Введите текст сообщения..."
                 />
-                <ul>
-                  <li>
-                    <span
-                      className="formGroupLink"
-                      onClick={(e) => { e.stopPropagation(); setActiveComponent('message'); }}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      Выбрать шаблонный текст
-                    </span>
-                  </li>
-                </ul>
+                <div className= "buttonContainer">
+                <button
+                  className="addButton"
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setActiveComponent('message'); }}
+                >
+                  Выбрать текст из списка
+                </button>
+            </div>
+
               </div>
 
-              <div className="formGroup">
+              <div className="addRow">
                 <textarea
-                  className="formGroupInput"
-                  type="tel"
+                  className="newTextInput"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="+7XXXXXXXXXX"
                 />
-                <ul>
-                  <li>
-                    <span
-                      className="formGroupLink"
-                      onClick={(e) => { e.stopPropagation(); setActiveComponent('contact'); }}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      Выбрать адресата из списка
-                    </span>
-                  </li>
-                </ul>
+                <div className= "buttonContainer">
+                <button
+                  className="addButton"
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setActiveComponent('contact'); }}
+                >
+                  Выбрать контакт из списка
+                </button>
+                </div>
               </div>
-
-            </div>
-            <button
+ <button
               type="button"
               className="counter"
               onClick={() => handleSendMessage()}
             >Отправить сообщение
             </button>
+            </div>
+           
           </>
         )}
       </section>

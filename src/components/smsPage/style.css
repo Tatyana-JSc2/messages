@@ -1,29 +1,26 @@
 .counter {
-  /* width: 300px; */
-  height: 40px;
+  width: 300px;
+  height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 17px;
-  margin-bottom: 32px;
+  font-size: 16px;
+  margin-bottom: 20px;
   border-radius: 50px;
-  color: var(--accent); 
+  color: var(--accent);
   background: var(--accent-bg);
   border: 2px solid transparent;
   transition: border-color 0.3s;
   margin-top: 20px;
-  
+  cursor: pointer;
 
   &:hover {
-    border-color: var(--accent-border);
-    background: var(--accent-bg2);  
+    border-color: var(--text-h);
+    background: var(--text-h);
   }
   &:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
-   
-    
-    
   }
 }
 
@@ -32,7 +29,7 @@
 .smsCenter {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  /* gap: 25px; */
   flex-grow: 1;
   height: 100%;
 
@@ -42,6 +39,7 @@
   }
 
   h2 {
+    margin-top: 12px;
     transition: font-size 0.7s ease;
   }
 }
@@ -131,61 +129,72 @@ li {
   }
 }
 
-.formGroupInput {
-  /* width: 700px; */
-  min-height: 50px;
-  overflow: 'hidden';
-  resize: 'none';
-  box-sizing: 'border-box';
-   border: none;
-    outline: none;
-  color: var(--text-h5);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &::placeholder {
-      color: var(--text-h7);    }
-
-    &:hover {
-      box-shadow: var(--shadow);
-      background-color: var(--border);
-    }
-
-    
-
-    
-}
-
 .mainBlock{
    display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 38px;
   place-content: center;
   place-items: center;
   flex-grow: 1;
-  padding-top: 20px;
+  /* padding-top: 20px; */
 }
 
-.formGroup {
-   display: flex;
+.addRow {
+  display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
+  /* justify-content: center ;
+  align-items:center ; */
+  gap: 8px;
+  width: 80%;
+  margin: 0 auto;
 
-  
-  
+  .newTextInput {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 16px;
+    background: var(--social-bg);
+    color: var(--text-h);
+    outline: none;
+    font-style: italic;
+    min-height: 50px;
+    resize: none;
+     font-style: italic;
+
+    &:focus {
+      border-color: var(--text-h1);
+    }
+
+     &::placeholder {
+      color: var(--text-h6);    }
+
+    &:hover {
+      box-shadow: var(--shadow);
+      
+    }
+  }
+
+.buttonContainer{
+  display:flex;
+  justify-content: center;
 }
 
-.formGroupLink {
-color: var(--text-h6);
+  .addButton {
+    text-align: center;
+    width: 250px;
+    padding: 8px 16px;
+    border-radius: 6px;
+border: none;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.3s;
+
+    &:hover {
+      background: var(--accent-bg);
+      border-color: var(--text-h);
+    }
+  }
 }
