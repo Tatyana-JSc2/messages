@@ -64,7 +64,11 @@ function MessagePage({ setSelectedMessageText, setActiveComponent, isActive }) {
   };
 
   const handleSelect = (template) => {
-    setIdChange(template.id);
+    if (idChange === template.id) {
+      setIdChange(null);
+    } else {
+      setIdChange(template.id);
+    }
   };
 
   const selectedTemplate = templates.find(t => t.id === idChange);
@@ -160,6 +164,7 @@ function MessagePage({ setSelectedMessageText, setActiveComponent, isActive }) {
                   className="messageLink"
                   onClick={(e) => {
                     e.stopPropagation();
+                    setIdChange(null);
                     if (selectedTemplate) {
                       setSelectedMessageText(selectedTemplate.text);
                       setActiveComponent('sms');

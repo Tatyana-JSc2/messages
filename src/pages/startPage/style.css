@@ -101,13 +101,12 @@ flex-direction: column;
   top: 0;
  }
 
- .topbarTitle {
+.topbarTitle {
  min-width: 0;
  display: block;
  text-align: start;
-
-
-  }
+ 
+ }
 
   .archiveLink {
     /* display: inline-block;
