@@ -32,9 +32,8 @@
 }
 
 .archiveTableWrapper {
-  flex: 1;
   overflow-y: auto;
-  min-height: 0;
+  overflow-x: hidden;
   max-height: calc(100% - 10px);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -59,6 +58,13 @@
   border-collapse: collapse;
   background: white;
   border-radius: 0;
+  table-layout: auto;
+  min-width: 0;
+
+  td {
+    min-width: 0;
+    max-width: 200px;
+  }
 
   thead {
     position: sticky;
@@ -78,12 +84,16 @@
   td {
     color: var(--text);
     font-size: 15px;
+    word-break: break-word;
   }
 
   th, td {
     padding: 12px 16px;
     text-align: left;
     border-bottom: 1px solid var(--border);
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   tbody tr:last-child td {
