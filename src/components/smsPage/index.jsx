@@ -1,6 +1,7 @@
 import './style.css'
 import { useState, useEffect, useRef } from 'react';
 import Contacts from '../../dataContacts';
+import { sendSms } from '../../api';
 
 const STORAGE_KEY = 'sentMessages';
 
@@ -56,7 +57,7 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
     }
   }, [selectedPhone]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!messageText || !phoneNumber) {
       alert('Заполните все поля!');
       return;
@@ -80,7 +81,30 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
     saveSentMessage(sentMessage);
     console.log('Отправленное сообщение:', sentMessage);
 
-    alert('Сообщение отправлено!');
+    const successPhones = [];
+    const failedPhones = [];
+
+    for (const phone of phones) {
+      try {
+        await sendSms(phone, messageText);
+        successPhones.push(phone);
+      } catch {
+        failedPhones.push(phone);
+      }
+    }
+
+    if (failedPhones.length > 0) {
+      alert(`Ошибка отправки сообщения на номер ${failedPhones.join(', ')}`);
+    }
+
+    if (successPhones.length > 0) {
+      alert(`Сообщения доставлены на номер ${successPhones.join(', ')}`);
+    }
+
+    if (failedPhones.length > 0) {
+      alert(`Не удалось доставить сообщение на номер ${failedPhones.join(', ')}`);
+    }
+
     setMessageText('');
     setPhoneNumber('');
     setIndexMessage('');
