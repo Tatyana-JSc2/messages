@@ -1,6 +1,6 @@
+import './style.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../components/smsPage/style.css';
 
 function LoginPage({ setIsAuthenticated }) {
   const [login, setLogin] = useState('');
@@ -18,33 +18,34 @@ function LoginPage({ setIsAuthenticated }) {
 
   return (
     <section className="loginSection">
+      <h2>Создание и отправка SMS-сообщений</h2>
       <div className="loginCard">
-        <h2>Вход в приложение</h2>
+        <h2 className="LoginHeader">Вход в приложение</h2>
         <div className="loginField">
-          <label htmlFor="login">Логин</label>
+           <label htmlFor="login">Логин: </label>
           <input
             id="login"
             type="text"
             className="loginInput"
             value={login}
             onChange={(e) => setLogin(e.target.value)}
-            placeholder="Введите логин"
+            placeholder="Введите логин: сац"
           />
         </div>
         <div className="loginField">
-          <label htmlFor="password">Пароль</label>
+          <label htmlFor="password">Пароль: </label>
           <input
             id="password"
             type="password"
             className="loginInput"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Введите пароль"
+            placeholder="Введите пароль: 1234"
           />
         </div>
         <button
           type="button"
-          className="counter"
+          className="loginButton"
           onClick={handleLogin}
         >
           Войти
