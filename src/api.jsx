@@ -1,4 +1,4 @@
-const API_URL = 'http://127.0.0.1:8800/api/v1/notifications/sms'
+const API_URL = '/api/v1/notifications/sms'
 export async function sendSms(phones, message) {
   const response = await fetch(API_URL, {
     method: 'POST',
