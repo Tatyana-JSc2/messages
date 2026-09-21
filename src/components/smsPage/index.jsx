@@ -1,7 +1,7 @@
 import './style.css'
 import { useState, useEffect, useRef } from 'react';
-import Contacts from '../../dataContacts';
-import { sendSms } from '../../api';
+// import Contacts from '../../dataContacts';
+import { sendSms, getContacts } from '../../api';
 
 const STORAGE_KEY = 'sentMessages';
 
@@ -24,24 +24,29 @@ function parsePhoneNumbers(phoneString) {
   return phoneString.split(';').map(p => p.trim()).filter(p => p.length > 0);
 }
 
-function findContactNames(phones) {
-  const names = [];
-  phones.forEach(phone => {
-    const contact = Contacts.find(c => c.phone === phone);
-    if (contact) {
-      names.push(contact.name);
-    } else {
-      names.push('Неизвестный');
-    }
-  });
-  return names;
+function buildDisplayName(contact) {
+  const parts = [contact.last_name, contact.first_name, contact.middle_name].filter(Boolean);
+  return parts.length > 0 ? parts.join(' ') : 'Неизвестный';
 }
 
 function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selectedPhone, isActive, setActiveComponent }) {
+  const [contacts, setContacts] = useState([]);
   const [messageText, setMessageText] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const prevSelectedTextRef = useRef(null);
   const prevSelectedPhoneRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getContacts()
+      .then((data) => {
+        if (!cancelled) {
+          setContacts(data);
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     if (selectedMessageText !== prevSelectedTextRef.current) {
@@ -56,6 +61,19 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
       prevSelectedPhoneRef.current = selectedPhone;
     }
   }, [selectedPhone]);
+
+  const findContactNames = (phones) => {
+    const names = [];
+    phones.forEach(phone => {
+      const contact = contacts.find(c => c.phone === phone);
+      if (contact) {
+        names.push(buildDisplayName(contact));
+      } else {
+        names.push('Неизвестный');
+      }
+    });
+    return names;
+  };
 
   const handleSendMessage = async () => {
     if (!messageText || !phoneNumber) {
@@ -161,7 +179,7 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
             >Отправить сообщение
             </button>
             </div>
-           
+            
           </>
         )}
       </section>

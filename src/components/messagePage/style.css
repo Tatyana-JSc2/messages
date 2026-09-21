@@ -59,9 +59,9 @@
   font-size: 0.8em;
 }
 
-.workspaceColumn:not(.active) .messageCenter {
+/* .workspaceColumn:not(.active) .messageCenter {
   justify-content: center;
-}
+} */
 
 
 

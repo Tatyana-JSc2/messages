@@ -52,9 +52,9 @@
   font-size: 0.8em;
 }
 
-.workspaceColumn:not(.active) .smsCenter {
+/* .workspaceColumn:not(.active) .smsCenter {
   justify-content: center;
-}
+} */
 
 #next-steps {
   /* width: 100%; */

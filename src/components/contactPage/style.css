@@ -53,9 +53,9 @@
   font-size: 0.8em;
 }
 
-.workspaceColumn:not(.active) .contactCenter {
+/* .workspaceColumn:not(.active) .contactCenter {
   justify-content: center;
-}
+} */
 
 .workspaceColumn:not(.active) #contactMainBlock,
 .workspaceColumn:not(.active) .button {
@@ -232,5 +232,145 @@
   &:hover {
     box-shadow: var(--shadow);
     background-color: var(--border);
+  }
+}
+
+.contactName {
+  flex: 1 1 auto;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+  min-width: 0;
+  margin: 0;
+}
+
+.contactPhone {
+  flex-shrink: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.editForm {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.contactAddRow {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+
+  .newTextInput {
+    flex: 1 1 calc(25% - 8px);
+    min-width: 100px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 16px;
+    background: var(--social-bg);
+    color: var(--text);
+    outline: none;
+    font-style: italic;
+
+    &:focus {
+      border-color: var(--text-h1);
+    }
+
+    &::placeholder {
+      color: var(--text-h6);
+    }
+
+    &:hover {
+      box-shadow: var(--shadow);
+    }
+  }
+
+  .addButton {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+      background: var(--accent-bg);
+      border-color: var(--text-h);
+    }
+  }
+}
+
+.addFormContainer {
+  width: 60%;
+  margin: 28px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .newTextInput {
+    /* width: 100%; */
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 16px;
+    background: var(--social-bg);
+    color: var(--text);
+    outline: none;
+    font-style: italic;
+
+    &:focus {
+      border-color: var(--text-h1);
+    }
+
+    &::placeholder {
+      color: var(--text-h6);
+    }
+
+    &:hover {
+      box-shadow: var(--shadow);
+    }
+  }
+
+  .addFormButtons {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+
+    .addButton {
+      flex: 1;
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.3s;
+
+      &.confirmButton {
+        background: var(--text);
+        color: var(--bg);
+
+        &:hover {
+          background: var(--accent-bg);
+          border-color: var(--text-h);
+        }
+      }
+
+      &.cancelButton {
+        background: var(--text);
+        color: var(--bg);
+
+        &:hover {
+          background: var(--accent-bg);
+          border-color: var(--text-h);
+        }
+      }
+    }
   }
 }
