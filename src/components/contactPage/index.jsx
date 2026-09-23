@@ -4,11 +4,6 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getContacts, addContact } from '../../api';
 
-function buildDisplayName(contact) {
-  const parts = [contact.last_name, contact.first_name, contact.middle_name].filter(Boolean);
-  return parts.length > 0 ? parts.join(' ') : contact.phone;
-}
-
 function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent, isActive }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -223,7 +218,6 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
   return (
     <>
       <section className="contactCenter" /*onClick={(e) => e.stopPropagation()}*/>
-        <h2>{title}</h2>
         {isActive && (
           <>
             {loading && <div className="emptyMessage">Загрузка контактов...</div>}
@@ -231,88 +225,127 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
             {!loading && !error && (
               <>
                 <div id="contactMainBlock" className='contactMainBlock'>
+                  <h2>{title}</h2>
                   {!showAddForm && (
                     <>
-                      <ul>
-                        {items.length === 0 && (
-                          <div className="emptyMessage">Список контактов пуст! Добавьте новый контакт!</div>
-                        )}
-                        {items.map((item) => (
-                          <li className='contactLi'
-                            style={{backgroundColor: item.active ? 'rgb(188, 195, 195)' : '', color: item.active ? 'var(--text-h7)' : ''}}
-                            key={item.id}
-                            onClick={() => changeItemActive(item.id)}
-                          >
-                            {editingPhone === item.phone ? (
-                              <>
-                                <div className="editForm" onClick={(e) => e.stopPropagation()}>
-                                  <input
-                                    className="editInput"
-                                    type="text"
-                                    placeholder="Телефон"
-                                    value={editForm.phone}
-                                    onChange={(e) => setEditField('phone', e.target.value)}
-                                  />
-                                  <input
-                                    className="editInput"
-                                    type="text"
-                                    placeholder="Имя"
-                                    value={editForm.first_name}
-                                    onChange={(e) => setEditField('first_name', e.target.value)}
-                                  />
-                                  <input
-                                    className="editInput"
-                                    type="text"
-                                    placeholder="Фамилия"
-                                    value={editForm.last_name}
-                                    onChange={(e) => setEditField('last_name', e.target.value)}
-                                  />
-                                  <input
-                                    className="editInput"
-                                    type="text"
-                                    placeholder="Отчество"
-                                    value={editForm.middle_name}
-                                    onChange={(e) => setEditField('middle_name', e.target.value)}
-                                  />
-                                </div>
-                                <button
-                                  className="editButton saveButton"
-                                  onClick={(e) => { e.stopPropagation(); handleSaveEdit(); }}
-                                  title="Сохранить"
-                                >
-                                  ✓
-                                </button>
-                                <button
-                                  className="editButton cancelButton"
-                                  onClick={(e) => { e.stopPropagation(); handleCancelEdit(); }}
-                                  title="Отмена"
-                                >
-                                  ✕
-                                </button>
-                              </>
+                      <div className="contactTableWrapper">
+                        <table className="contactTable">
+                          <thead>
+                            <tr>
+                              <th>№</th>
+                              <th>Фамилия</th>
+                              <th>Имя</th>
+                              <th>Отчество</th>
+                              <th>№ телефона</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {items.length === 0 ? (
+                              <tr>
+                                <td colSpan="6" className="emptyTableCell">
+                                  Список контактов пуст! Добавьте первый контакт!
+                                </td>
+                              </tr>
                             ) : (
-                              <>
-                                <p className="contactName">{buildDisplayName(item)}</p>
-                                <p className="contactPhone">{item.phone}</p>
-                                <button
-                                  className="editButton"
-                                  onClick={(e) => { e.stopPropagation(); handleStartEdit(item); }}
-                                  title="Редактировать"
+                              items.map((item, index) => (
+                                <tr
+                                  className={`contactTableRow ${editingPhone === item.phone ? 'editing' : ''}`}
+                                  style={{ backgroundColor: item.active ? 'rgb(188, 195, 195)' : '', color: item.active ? 'var(--text-h7)' : '' }}
+                                  key={item.id}
+                                  onClick={() => changeItemActive(item.id)}
                                 >
-                                  ✎
-                                </button>
-                                <button
-                                  className="editButton deleteButton"
-                                  onClick={(e) => { e.stopPropagation(); handleDeleteContact(item.phone); }}
-                                  title="Удалить"
-                                >
-                                  ✕
-                                </button>
-                              </>
+                                  {editingPhone === item.phone ? (
+                                    <>
+                                      <td>{index + 1}</td>
+                                      <td>
+                                        <input
+                                          className="editInput"
+                                          type="text"
+                                          placeholder="Фамилия"
+                                          value={editForm.last_name}
+                                          onChange={(e) => setEditField('last_name', e.target.value)}
+                                          onClick={(e) => e.stopPropagation()}
+                                        />
+                                      </td>
+                                      <td>
+                                        <input
+                                          className="editInput"
+                                          type="text"
+                                          placeholder="Имя"
+                                          value={editForm.first_name}
+                                          onChange={(e) => setEditField('first_name', e.target.value)}
+                                          onClick={(e) => e.stopPropagation()}
+                                        />
+                                      </td>
+                                      <td>
+                                        <input
+                                          className="editInput"
+                                          type="text"
+                                          placeholder="Отчество"
+                                          value={editForm.middle_name}
+                                          onChange={(e) => setEditField('middle_name', e.target.value)}
+                                          onClick={(e) => e.stopPropagation()}
+                                        />
+                                      </td>
+                                      <td>
+                                        <input
+                                          className="editInput"
+                                          type="text"
+                                          placeholder="Телефон"
+                                          value={editForm.phone}
+                                          onChange={(e) => setEditField('phone', e.target.value)}
+                                          onClick={(e) => e.stopPropagation()}
+                                        />
+                                      </td>
+                                      <td className="actionCell">
+                                        <button
+                                          className="editButton saveButton"
+                                          onClick={(e) => { e.stopPropagation(); handleSaveEdit(); }}
+                                          title="Сохранить"
+                                        >
+                                          ✓
+                                        </button>
+                                        <button
+                                          className="editButton cancelButton"
+                                          onClick={(e) => { e.stopPropagation(); handleCancelEdit(); }}
+                                          title="Отмена"
+                                        >
+                                          ✕
+                                        </button>
+                                      </td>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <td>{index + 1}</td>
+                                      <td>{item.last_name || '—'}</td>
+                                      <td>{item.first_name || '—'}</td>
+                                      <td>{item.middle_name || '—'}</td>
+                                      <td>{item.phone}</td>
+                                      <td className="actionCell">
+                                        <button
+                                          className="editButton"
+                                          onClick={(e) => { e.stopPropagation(); handleStartEdit(item); }}
+                                          title="Редактировать"
+                                        >
+                                          ✎
+                                        </button>
+                                        <button
+                                          className="editButton deleteButton"
+                                          onClick={(e) => { e.stopPropagation(); handleDeleteContact(item.phone); }}
+                                          title="Удалить"
+                                        >
+                                          ✕
+                                        </button>
+                                      </td>
+                                    </>
+                                  )}
+                                </tr>
+                              ))
                             )}
-                          </li>
-                        ))}
-                      </ul>
+                          </tbody>
+                        </table>
+                      </div>
 
                       <div className="contactAddRow">
                         <button className="addButton" onClick={handleShowAddForm}>

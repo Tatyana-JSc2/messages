@@ -41,10 +41,15 @@ function StartPage() {
   // };
 
 
+  const tabs = [
+    { key: 'sms', label: 'Отправка SMS' },
+    { key: 'message', label: 'Шаблоны сообщений' },
+    { key: 'contact', label: 'Контакты' },
+  ];
+
   return (
     <>
-   
-       <section className='section hover:bg-red-300 '>
+       <section className='section'>
         <header className='topbar'>
            <div className='topbarTitle'>
              <h2>SMS-сообщения</h2>
@@ -52,21 +57,50 @@ function StartPage() {
            </div>
         </header>
          <main className='main'>
-           <div className={`mainWorkSpace ${activeComponent === 'sms' ? 'smsActive' : ''} ${activeComponent === 'message' ? 'messageActive' : ''} ${activeComponent === 'contact' ? 'contactActive' : ''}`}>
-             <div className={`workspaceColumn ${activeComponent === 'sms' ? 'active' : ''}`} onClick={() => setActiveComponent('sms')}>
-               <SmsPage indexMessage={indexMessage} indexContact={indexContact} setIndexMessage={setIndexMessage} setIndexContact={setIndexContact} selectedMessageText={selectedMessageText} selectedPhone={selectedPhone} isActive={activeComponent === 'sms'} setActiveComponent={setActiveComponent}></SmsPage>
-             </div>
-             <div className={`workspaceColumn ${activeComponent === 'message' ? 'active' : ''}`} onClick={() => setActiveComponent('message')}>
-               <MessagePage setIndexMessage={setIndexMessage} setSelectedMessageText={setSelectedMessageText} setActiveComponent={setActiveComponent} isActive={activeComponent === 'message'}></MessagePage>
-             </div>
-             <div className={`workspaceColumn ${activeComponent === 'contact' ? 'active' : ''}`} onClick={() => setActiveComponent('contact')}>
-               <ContactPage setIndexContact={setIndexContact} setSelectedPhone={setSelectedPhone} setActiveComponent={setActiveComponent} isActive={activeComponent === 'contact'}></ContactPage>
-             </div>
+           <div className="tabsHeader">
+             {tabs.map((tab) => (
+               <button
+                 key={tab.key}
+                 className={`tabButton ${activeComponent === tab.key ? 'active' : ''}`}
+                 onClick={() => setActiveComponent(tab.key)}
+               >
+                 {tab.label}
+               </button>
+             ))}
+           </div>
+           <div className="tabContent">
+             {activeComponent === 'sms' && (
+               <SmsPage
+                 indexMessage={indexMessage}
+                 indexContact={indexContact}
+                 setIndexMessage={setIndexMessage}
+                 setIndexContact={setIndexContact}
+                 selectedMessageText={selectedMessageText}
+                 selectedPhone={selectedPhone}
+                 isActive={true}
+                 setActiveComponent={setActiveComponent}
+               />
+             )}
+             {activeComponent === 'message' && (
+               <MessagePage
+                 setIndexMessage={setIndexMessage}
+                 setSelectedMessageText={setSelectedMessageText}
+                 setActiveComponent={setActiveComponent}
+                 isActive={true}
+               />
+             )}
+             {activeComponent === 'contact' && (
+               <ContactPage
+                 setIndexContact={setIndexContact}
+                 setSelectedPhone={setSelectedPhone}
+                 setActiveComponent={setActiveComponent}
+                 isActive={true}
+               />
+             )}
            </div>
          </main>
-          <Link to="/archivePage" className='archiveLink'>Архив отправленных сообщений</Link>
+         <Link to="/archivePage" className='archiveLink'>Архив отправленных сообщений</Link>
       </section>
-      {/* <Link to="/archivePage" className='archiveLink'>Архив отправленных сообщений</Link> */}
     </>
   )
 }

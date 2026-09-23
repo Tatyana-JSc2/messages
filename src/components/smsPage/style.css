@@ -13,6 +13,7 @@
   transition: border-color 0.3s;
   margin-top: 20px;
   cursor: pointer;
+  flex-shrink: 0;
 
   &:hover {
     border-color: var(--text-h);
@@ -30,8 +31,11 @@
   display: flex;
   flex-direction: column;
   /* gap: 25px; */
-  flex-grow: 1;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  border-top-left-radius: 0;
+  overflow: hidden;
+}
 
   @media (max-width: 1024px) {
     padding: 32px 20px 24px;
@@ -41,6 +45,7 @@
   h2 {
     margin-top: 12px;
     transition: font-size 0.7s ease;
+    flex-shrink: 0;
   }
 }
 
@@ -135,8 +140,10 @@ li {
   gap: 38px;
   place-content: center;
   place-items: center;
-  flex-grow: 1;
+  flex: 1;
+  min-height: 0;
   /* padding-top: 20px; */
+  overflow: hidden;
 }
 
 .addRow {
@@ -147,9 +154,10 @@ li {
   gap: 8px;
   width: 80%;
   margin: 0 auto;
+  flex-shrink: 0;
 
   .newTextInput {
-    flex: 1;
+    flex: 0 0 auto;
     padding: 8px 12px;
     border-radius: 6px;
     border: 1px solid var(--border);
