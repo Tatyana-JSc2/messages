@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getContacts, addContact } from '../../api';
 
-function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent, isActive }) {
+function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent, isActive, addingToGroupId, setPendingGroupContacts }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,6 +13,9 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
   const [newContact, setNewContact] = useState({ phone: '', first_name: '', last_name: '', middle_name: '' });
   const [showAddForm, setShowAddForm] = useState(false);
   const [title, setTitle] = useState('Список контактов');
+  const [groupContacts, setGroupContacts] = useState([]);
+
+  const isGroupEditMode = !!addingToGroupId;
 
   useEffect(() => {
     let cancelled = false;
@@ -33,7 +36,7 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
               id: `${phone}-${index}`,
               active: false,
             };
-          });
+          }).sort((a, b) => (a.last_name || '').localeCompare(b.last_name || '', 'ru'));
           setItems(contacts);
         }
       })
@@ -64,13 +67,34 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
 
   const handleAddContacts = () => {
     const activeItems = items.filter(item => item.active);
-    const phonesArray = activeItems.map(item => item.phone);
-    const phones = phonesArray.join('; ');
-    setSelectedPhone(phones);
-    setItems(prevItems =>
-      prevItems.map(item => ({ ...item, active: false }))
-    );
-    setActiveComponent('sms');
+    if (activeItems.length === 0) {
+      alert('Выберите контакт из списка!');
+      return;
+    }
+    if (isGroupEditMode) {
+      // Добавляем выбранные контакты в группу и возвращаемся к groupPage
+      const existingPhones = new Set(groupContacts.map((c) => c.phone));
+      const newContacts = activeItems.filter((c) => !existingPhones.has(c.phone));
+      const updatedContacts = [...groupContacts, ...newContacts];
+      // Сбрасываем выделение
+      setItems((prev) =>
+        prev.map((item) => ({ ...item, active: false }))
+      );
+      // Передаём контакты обратно в groupPage — groupPage сам сбросит addingToGroupId
+      if (setPendingGroupContacts) {
+        setPendingGroupContacts(updatedContacts);
+      }
+      setGroupContacts([]);
+      setActiveComponent('group');
+    } else {
+      const phonesArray = activeItems.map(item => item.phone);
+      const phones = phonesArray.join('; ');
+      setSelectedPhone(phones);
+      setItems(prevItems =>
+        prevItems.map(item => ({ ...item, active: false }))
+      );
+      setActiveComponent('sms');
+    }
   };
 
   const handleStartEdit = (contact) => {
@@ -228,126 +252,100 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
                   <h2>{title}</h2>
                   {!showAddForm && (
                     <>
-                      <div className="contactTableWrapper">
-                        <table className="contactTable">
-                          <thead>
-                            <tr>
-                              <th>№</th>
-                              <th>Фамилия</th>
-                              <th>Имя</th>
-                              <th>Отчество</th>
-                              <th>№ телефона</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {items.length === 0 ? (
-                              <tr>
-                                <td colSpan="6" className="emptyTableCell">
-                                  Список контактов пуст! Добавьте первый контакт!
-                                </td>
-                              </tr>
-                            ) : (
-                              items.map((item, index) => (
-                                <tr
-                                  className={`contactTableRow ${editingPhone === item.phone ? 'editing' : ''}`}
-                                  style={{ backgroundColor: item.active ? 'rgb(188, 195, 195)' : '', color: item.active ? 'var(--text-h7)' : '' }}
-                                  key={item.id}
-                                  onClick={() => changeItemActive(item.id)}
+                      <ul className="templatesList">
+                        {items.length === 0 && (
+                          <div className="emptyMessage">
+                            Список контактов пуст! Добавьте первый контакт!
+                          </div>
+                        )}
+                        {items.map((item) => (
+                          <li
+                            className={`${editingPhone === item.phone ? 'editing' : ''}`}
+                            style={{
+                              backgroundColor: item.active ? 'rgb(188, 195, 195)' : '',
+                              color: item.active ? 'var(--text-h7)' : ''
+                            }}
+                            key={item.id}
+                            onClick={() => changeItemActive(item.id)}
+                          >
+                            {editingPhone === item.phone ? (
+                              <>
+                                <input
+                                  className="editInput"
+                                  type="text"
+                                  placeholder="Фамилия"
+                                  value={editForm.last_name}
+                                  onChange={(e) => setEditField('last_name', e.target.value)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                                <input
+                                  className="editInput"
+                                  type="text"
+                                  placeholder="Имя"
+                                  value={editForm.first_name}
+                                  onChange={(e) => setEditField('first_name', e.target.value)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                                <input
+                                  className="editInput"
+                                  type="text"
+                                  placeholder="Отчество"
+                                  value={editForm.middle_name}
+                                  onChange={(e) => setEditField('middle_name', e.target.value)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                                <input
+                                  className="editInput"
+                                  type="text"
+                                  placeholder="Телефон"
+                                  value={editForm.phone}
+                                  onChange={(e) => setEditField('phone', e.target.value)}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                                <button
+                                  className="editButton saveButton"
+                                  onClick={(e) => { e.stopPropagation(); handleSaveEdit(); }}
+                                  title="Сохранить"
                                 >
-                                  {editingPhone === item.phone ? (
-                                    <>
-                                      <td>{index + 1}</td>
-                                      <td>
-                                        <input
-                                          className="editInput"
-                                          type="text"
-                                          placeholder="Фамилия"
-                                          value={editForm.last_name}
-                                          onChange={(e) => setEditField('last_name', e.target.value)}
-                                          onClick={(e) => e.stopPropagation()}
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          className="editInput"
-                                          type="text"
-                                          placeholder="Имя"
-                                          value={editForm.first_name}
-                                          onChange={(e) => setEditField('first_name', e.target.value)}
-                                          onClick={(e) => e.stopPropagation()}
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          className="editInput"
-                                          type="text"
-                                          placeholder="Отчество"
-                                          value={editForm.middle_name}
-                                          onChange={(e) => setEditField('middle_name', e.target.value)}
-                                          onClick={(e) => e.stopPropagation()}
-                                        />
-                                      </td>
-                                      <td>
-                                        <input
-                                          className="editInput"
-                                          type="text"
-                                          placeholder="Телефон"
-                                          value={editForm.phone}
-                                          onChange={(e) => setEditField('phone', e.target.value)}
-                                          onClick={(e) => e.stopPropagation()}
-                                        />
-                                      </td>
-                                      <td className="actionCell">
-                                        <button
-                                          className="editButton saveButton"
-                                          onClick={(e) => { e.stopPropagation(); handleSaveEdit(); }}
-                                          title="Сохранить"
-                                        >
-                                          ✓
-                                        </button>
-                                        <button
-                                          className="editButton cancelButton"
-                                          onClick={(e) => { e.stopPropagation(); handleCancelEdit(); }}
-                                          title="Отмена"
-                                        >
-                                          ✕
-                                        </button>
-                                      </td>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <td>{index + 1}</td>
-                                      <td>{item.last_name || '—'}</td>
-                                      <td>{item.first_name || '—'}</td>
-                                      <td>{item.middle_name || '—'}</td>
-                                      <td>{item.phone}</td>
-                                      <td className="actionCell">
-                                        <button
-                                          className="editButton"
-                                          onClick={(e) => { e.stopPropagation(); handleStartEdit(item); }}
-                                          title="Редактировать"
-                                        >
-                                          ✎
-                                        </button>
-                                        <button
-                                          className="editButton deleteButton"
-                                          onClick={(e) => { e.stopPropagation(); handleDeleteContact(item.phone); }}
-                                          title="Удалить"
-                                        >
-                                          ✕
-                                        </button>
-                                      </td>
-                                    </>
-                                  )}
-                                </tr>
-                              ))
+                                  ✓
+                                </button>
+                                <button
+                                  className="editButton cancelButton"
+                                  onClick={(e) => { e.stopPropagation(); handleCancelEdit(); }}
+                                  title="Отмена"
+                                >
+                                  ✕
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <span className="templateText">
+                                  <span>{item.last_name || '—'}</span>
+                                  <span>{item.first_name || '—'}</span>
+                                  <span>{item.middle_name || '—'}</span>
+                                  <span className="templatePhone">{item.phone}</span>
+                                </span>
+                                <button
+                                  className="editButton"
+                                  onClick={(e) => { e.stopPropagation(); handleStartEdit(item); }}
+                                  title="Редактировать"
+                                >
+                                  ✎
+                                </button>
+                                <button
+                                  className="editButton deleteButton"
+                                  onClick={(e) => { e.stopPropagation(); handleDeleteContact(item.phone); }}
+                                  title="Удалить"
+                                >
+                                  ✕
+                                </button>
+                              </>
                             )}
-                          </tbody>
-                        </table>
-                      </div>
+                          </li>
+                        ))}
+                      </ul>
 
-                      <div className="contactAddRow">
+                      <div className="contactAddRow" style={{ display: isGroupEditMode ? 'none' : 'flex' }}>
                         <button className="addButton" onClick={handleShowAddForm}>
                           Добавить новый контакт в список
                         </button>
@@ -397,21 +395,29 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
                   )}
                 </div>
                 <div className="buttonWrapper" style={{ display: showAddForm ? 'none' : 'flex' }}>
-                  <Link to="/"
-                    type="button"
-                    className="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const activeItems = items.filter(item => item.active);
-                      if (activeItems.length > 0) {
+                  {isGroupEditMode ? (
+                    <button
+                      className="groupAddButton"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         handleAddContacts();
-                      } else {
-                        alert('Выберите контакт из списка!');
-                      }
-                    }}
-                  >
-                    Добавить контакт в СМС-сообщение
-                  </Link>
+                      }}
+                    >
+                      Добавить контакт в группу
+                    </button>
+                  ) : (
+                    <Link to="/"
+                      type="button"
+                      className="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddContacts();
+                      }}
+                    >
+                      Добавить контакт в СМС-сообщение
+                    </Link>
+                  )}
                 </div>
               </>
             )}

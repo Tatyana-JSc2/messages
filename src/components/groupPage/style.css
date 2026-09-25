@@ -66,36 +66,7 @@
 .buttonWrapper {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
   flex-shrink: 0;
-}
-
-.addedContactsPreview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
-  max-width: 600px;
-}
-
-.addedContactChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--social-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 4px 8px 4px 12px;
-  font-size: 13px;
-  color: var(--text);
-}
-
-.editButton.small {
-  font-size: 11px;
-  padding: 1px 4px;
-  border-radius: 50%;
-  line-height: 1;
 }
 
 .contactAddRow {
@@ -120,85 +91,6 @@
     }
   }
 }
-
-.buttonWrapper {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.addedContactsPreview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
-  max-width: 600px;
-}
-
-.addedContactChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--social-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 4px 8px 4px 12px;
-  font-size: 13px;
-  color: var(--text);
-}
-
-.editButton.small {
-  font-size: 11px;
-  padding: 1px 4px;
-  border-radius: 50%;
-  line-height: 1;
-}
-
-.groupAddButton {
-  text-align: center;
-  width: 250px;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  background: var(--text);
-  color: var(--bg);
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.3s;
-
-   &:hover {
-    background: var(--accent-bg);
-    border-color: var(--text-h);
-   }
-
-
-    &::placeholder {
-      color: var(--text-h6);
-    }
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-}
-
-  .addButton {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    background: var(--text);
-    color: var(--bg);
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.3s;
-
-    &:hover {
-      background: var(--accent-bg);
-      border-color: var(--text-h);
-    }
-  }
-
 
 .addFormContainer {
   width: 60%;
@@ -381,6 +273,87 @@
       color: inherit;
       outline: none;
       box-sizing: border-box;
+    }
+
+    .contactsTextarea {
+      flex: 1 1 0;
+      min-width: 0;
+      max-height: 150px;
+      resize: none;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .groupContactsList {
+      flex: 1 1 0;
+      min-width: 0;
+      max-height: 150px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    .groupContactItem {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.03);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    .groupContactName {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .groupContactPhone {
+      flex-shrink: 0;
+      white-space: nowrap;
+      color: var(--text-h6);
+    }
+
+    .removeContactButton {
+      flex-shrink: 0;
+      font-size: 11px;
+      padding: 1px 4px;
+      border-radius: 50%;
+      color: var(--text-h1);
+
+      &:hover {
+        background: rgba(255, 0, 0, 0.2);
+      }
+    }
+
+    .addContactIcon {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 21px;
+      line-height: 1;
+      color: var(--text);
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
     }
   }
 
