@@ -5,6 +5,7 @@ import ContactPage from '../../components/contactPage';
 import GroupPage from '../../components/groupPage';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getContacts } from '../../api';
 
 // Заглушка API для групп
 const mockGroups = [
@@ -64,19 +65,47 @@ function StartPage() {
    const [pendingGroupContacts, setPendingGroupContacts] = useState([]); // массив контактов, добавленных из contactPage
    const [groups, setGroups] = useState([]);
    const [groupsLoading, setGroupsLoading] = useState(true);
+   const [contacts, setContacts] = useState([]);
 
    useEffect(() => {
-     let cancelled = false;
-     getGroups()
-       .then((data) => {
-         if (!cancelled) setGroups(data);
-       })
-       .catch(() => {})
-       .finally(() => {
-         if (!cancelled) setGroupsLoading(false);
-       });
-     return () => { cancelled = true; };
-   }, []);
+      let cancelled = false;
+      getGroups()
+        .then((data) => {
+          if (!cancelled) setGroups(data);
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (!cancelled) setGroupsLoading(false);
+        });
+      return () => { cancelled = true; };
+    }, []);
+
+    useEffect(() => {
+      let cancelled = false;
+      getContacts()
+        .then((data) => {
+          if (!cancelled) {
+            const contacts = data.map((c, index) => {
+              const phone = c.phones?.[0] || '';
+              const parts = (c.name || '').split(' ').filter(Boolean);
+              const [first_name, middle_name, ...rest] = parts;
+              const last_name = rest.join(' ') || '';
+              return {
+                phone,
+                first_name: first_name || '',
+                last_name,
+                middle_name: middle_name || '',
+                id: `${phone}-${index}`,
+                active: false,
+              };
+            });
+            setContacts(contacts);
+          }
+        })
+        .catch(() => {})
+        .finally(() => {});
+      return () => { cancelled = true; };
+    }, []);
 
   // const SameText = Messages.find(message => message.id === indexMessage)?.text;
   // const SamePhone = () => {
@@ -163,24 +192,25 @@ function StartPage() {
                    isActive={true}
                  />
                )}
-               {activeComponent === 'group' && (
-                 <GroupPage
-                   groups={groups}
-                   setGroups={setGroups}
-                   groupsLoading={groupsLoading}
-                   setSelectedPhone={setSelectedPhone}
-                   setActiveComponent={setActiveComponent}
-                   groupEditMode={groupEditMode}
-                   setGroupEditMode={setGroupEditMode}
-                   addingToGroupId={addingToGroupId}
-                   pendingGroupContacts={pendingGroupContacts}
-                   setPendingGroupContacts={setPendingGroupContacts}
-                   setAddingToGroupId={setAddingToGroupId}
-                   addGroup={addGroup}
-                   updateGroup={updateGroup}
-                   deleteGroup={deleteGroup}
-                   isActive={true}
-                 />
+                {activeComponent === 'group' && (
+                  <GroupPage
+                    groups={groups}
+                    setGroups={setGroups}
+                    groupsLoading={groupsLoading}
+                    setSelectedPhone={setSelectedPhone}
+                    setActiveComponent={setActiveComponent}
+                    groupEditMode={groupEditMode}
+                    setGroupEditMode={setGroupEditMode}
+                    addingToGroupId={addingToGroupId}
+                    pendingGroupContacts={pendingGroupContacts}
+                    setPendingGroupContacts={setPendingGroupContacts}
+                    setAddingToGroupId={setAddingToGroupId}
+                    addGroup={addGroup}
+                    updateGroup={updateGroup}
+                    deleteGroup={deleteGroup}
+                    contacts={contacts}
+                    isActive={true}
+                  />
                )}
            </div>
          </main>

@@ -2,7 +2,7 @@ import './style.css';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActiveComponent, groupEditMode, setGroupEditMode, addingToGroupId, setAddingToGroupId, pendingGroupContacts, setPendingGroupContacts, addGroup, updateGroup, deleteGroup, isActive }) {
+function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActiveComponent, groupEditMode, setGroupEditMode, addingToGroupId, setAddingToGroupId, pendingGroupContacts, setPendingGroupContacts, addGroup, updateGroup, deleteGroup, isActive, contacts }) {
   const [editingGroupId, setEditingGroupId] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', contacts: [] });
   const [newGroup, setNewGroup] = useState({ name: '' });
@@ -11,6 +11,7 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   // pendingGroupContacts — массив контактов, добавленных из contactPage
   // addingToGroupId — ID группы, в которую добавляем
@@ -27,10 +28,25 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
           return g;
         })
       );
+      // Находим группу и формируем сообщение
+      const group = groups.find((g) => g.id === addingToGroupId);
+      if (group) {
+        const newContacts = pendingGroupContacts.filter((c) => {
+          const existingPhones = new Set(group.contacts?.map((cc) => cc.phone) || []);
+          return !existingPhones.has(c.phone);
+        });
+        if (newContacts.length > 0) {
+          const contactNames = newContacts
+            .map((c) => `${c.last_name} ${c.first_name} ${c.middle_name}`.trim())
+            .join(', ');
+          setSuccessMessage(`Контакт(ы) ${contactNames} добавлен(ы) в группу "${group.name}"`);
+          setTimeout(() => setSuccessMessage(null), 5000);
+        }
+      }
       setPendingGroupContacts([]);
       setAddingToGroupId(null);
     }
-  }, [pendingGroupContacts, addingToGroupId, setPendingGroupContacts, setAddingToGroupId, setGroups]);
+  }, [pendingGroupContacts, addingToGroupId, setPendingGroupContacts, setAddingToGroupId, setGroups, groups]);
 
   // Когда groupEditMode установлен извне (при редактировании группы)
   useEffect(() => {
@@ -123,6 +139,10 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
   };
 
   const handleAddContactToGroup = () => {
+    if (!contacts || contacts.length === 0) {
+      alert('Невозможно добавить контакт из списка (список пуст)!');
+      return;
+    }
     setAddingToGroupId(editingGroupId);
     setPendingGroupContacts([]);
     setActiveComponent('contact');
@@ -182,6 +202,11 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
               <>
                 <div id="contactMainBlock" className="contactMainBlock">
                   <h2>{title}</h2>
+                  {successMessage && (
+                    <div className="emptyMessage" style={{ color: 'var(--text-h7)', fontWeight: 'bold' }}>
+                      {successMessage}
+                    </div>
+                  )}
                   {!showAddForm && (
                     <>
                       <ul className="templatesList">
