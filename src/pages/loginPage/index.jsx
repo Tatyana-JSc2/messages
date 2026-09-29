@@ -1,17 +1,21 @@
 import './style.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginApi } from '../../api';
 
 function LoginPage({ setIsAuthenticated }) {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (login === 'сац' && password === '1234') {
-      setIsAuthenticated(true);
-      navigate('/');
-    } else {
+  const handleLogin = async () => {
+    try {
+      const result = await loginApi(login, password);
+      if (result.success) {
+        setIsAuthenticated(true);
+        navigate('/');
+      }
+    } catch (err) {
       alert('Введен неверный логин или пароль!');
     }
   };
@@ -43,13 +47,22 @@ function LoginPage({ setIsAuthenticated }) {
             placeholder="Введите пароль: 1234"
           />
         </div>
-        <button
-          type="button"
-          className="loginButton"
-          onClick={handleLogin}
-        >
-          Войти
-        </button>
+        <div className="loginButtons">
+          <button
+            type="button"
+            className="loginButton"
+            onClick={handleLogin}
+          >
+            Войти
+          </button>
+          <button
+            type="button"
+            className="loginButton"
+            onClick={() => navigate('/register')}
+          >
+            Зарегистрироваться
+          </button>
+        </div>
       </div>
     </section>
   );

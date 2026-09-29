@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getContacts, addContact } from '../../api';
 
-function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent, isActive, addingToGroupId, setPendingGroupContacts }) {
+function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent, isActive, addingToGroupId, setPendingGroupContacts, groupContacts: groupContactsProp, setGroupContacts: setGroupContactsProp }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +13,9 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
   const [newContact, setNewContact] = useState({ phone: '', first_name: '', last_name: '', middle_name: '' });
   const [showAddForm, setShowAddForm] = useState(false);
   const [title, setTitle] = useState('Список контактов');
-  const [groupContacts, setGroupContacts] = useState([]);
+
+  const groupContacts = groupContactsProp || [];
+  const setGroupContacts = setGroupContactsProp || (() => {});
 
   const isGroupEditMode = !!addingToGroupId;
 
@@ -84,7 +86,6 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
       if (setPendingGroupContacts) {
         setPendingGroupContacts(updatedContacts);
       }
-      setGroupContacts([]);
       setActiveComponent('group');
     } else {
       const phonesArray = activeItems.map(item => item.phone);
@@ -252,6 +253,19 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
                   <h2>{title}</h2>
                   {!showAddForm && (
                     <>
+                      {isGroupEditMode && groupContacts.length > 0 && (
+                        <div className="groupContactsList" style={{ marginBottom: '16px' }}>
+                          <h3>Добавленные контакты:</h3>
+                          {groupContacts.map((contact, idx) => (
+                            <div key={idx} className="groupContactItem">
+                              <span className="groupContactName">
+                                {[contact.last_name, contact.first_name, contact.middle_name].filter(Boolean).join(' ')}
+                              </span>
+                              <span className="groupContactPhone">{contact.phone}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <ul className="templatesList">
                         {items.length === 0 && (
                           <div className="emptyMessage">

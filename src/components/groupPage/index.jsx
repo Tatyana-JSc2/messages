@@ -17,36 +17,38 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
   // addingToGroupId — ID группы, в которую добавляем
   useEffect(() => {
     if (Array.isArray(pendingGroupContacts) && pendingGroupContacts.length > 0 && addingToGroupId) {
+      let addedGroup = null;
       // Добавляем контакты к существующей группе
-      setGroups((prev) =>
-        prev.map((g) => {
+      setGroups((prev) => {
+        const updated = prev.map((g) => {
           if (g.id === addingToGroupId) {
             const existingPhones = new Set(g.contacts?.map((c) => c.phone) || []);
             const newContacts = pendingGroupContacts.filter((c) => !existingPhones.has(c.phone));
-            return { ...g, contacts: [...(g.contacts || []), ...newContacts] };
+            addedGroup = { ...g, contacts: [...(g.contacts || []), ...newContacts] };
+            return addedGroup;
           }
           return g;
-        })
-      );
-      // Находим группу и формируем сообщение
-      const group = groups.find((g) => g.id === addingToGroupId);
-      if (group) {
-        const newContacts = pendingGroupContacts.filter((c) => {
-          const existingPhones = new Set(group.contacts?.map((cc) => cc.phone) || []);
-          return !existingPhones.has(c.phone);
         });
+        return updated;
+      });
+      // Формируем сообщение об успехе
+      if (addedGroup) {
+        const existingPhones = new Set((addedGroup.contacts || []).filter(c => 
+          !pendingGroupContacts.some(nc => nc.phone === c.phone)
+        ).map((c) => c.phone));
+        const newContacts = pendingGroupContacts.filter((c) => !existingPhones.has(c.phone));
         if (newContacts.length > 0) {
           const contactNames = newContacts
             .map((c) => `${c.last_name} ${c.first_name} ${c.middle_name}`.trim())
             .join(', ');
-          setSuccessMessage(`Контакт(ы) ${contactNames} добавлен(ы) в группу "${group.name}"`);
+          setSuccessMessage(`Контакт(ы) ${contactNames} добавлен(ы) в группу "${addedGroup.name}"`);
           setTimeout(() => setSuccessMessage(null), 5000);
         }
       }
       setPendingGroupContacts([]);
       setAddingToGroupId(null);
     }
-  }, [pendingGroupContacts, addingToGroupId, setPendingGroupContacts, setAddingToGroupId, setGroups, groups]);
+  }, [pendingGroupContacts, addingToGroupId, setPendingGroupContacts, setAddingToGroupId, setGroups]);
 
   // Когда groupEditMode установлен извне (при редактировании группы)
   useEffect(() => {
@@ -139,10 +141,6 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
   };
 
   const handleAddContactToGroup = () => {
-    if (!contacts || contacts.length === 0) {
-      alert('Невозможно добавить контакт из списка (список пуст)!');
-      return;
-    }
     setAddingToGroupId(editingGroupId);
     setPendingGroupContacts([]);
     setActiveComponent('contact');

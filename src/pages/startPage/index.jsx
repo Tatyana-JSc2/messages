@@ -183,15 +183,17 @@ function StartPage() {
                  isActive={true}
                />
              )}
-               {activeComponent === 'contact' && (
-                 <ContactPage
-                   setSelectedPhone={setSelectedPhone}
-                   setActiveComponent={setActiveComponent}
-                   addingToGroupId={addingToGroupId}
-                   setPendingGroupContacts={setPendingGroupContacts}
-                   isActive={true}
-                 />
-               )}
+                {activeComponent === 'contact' && (
+                  <ContactPage
+                    setSelectedPhone={setSelectedPhone}
+                    setActiveComponent={setActiveComponent}
+                    addingToGroupId={addingToGroupId}
+                    setPendingGroupContacts={setPendingGroupContacts}
+                    groupContacts={pendingGroupContacts}
+                    setGroupContacts={setPendingGroupContacts}
+                    isActive={true}
+                  />
+                )}
                 {activeComponent === 'group' && (
                   <GroupPage
                     groups={groups}
