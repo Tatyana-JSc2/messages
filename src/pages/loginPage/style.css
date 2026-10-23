@@ -1,95 +1,318 @@
 .loginSection {
   min-height: 100vh;
   display: flex;
-  gap: 30px;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  
+  justify-content: center;
+  padding: 1rem;
+  background: #f97316;
 }
 
 .loginCard {
   display: flex;
+  max-width: 42rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Левая панель ===== */
+.loginLeft {
+  display: none;
+  width: 40%;
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+  padding: 2rem;
+  color: #fff;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (min-width: 1024px) {
+  .loginLeft {
+    display: flex;
+  }
+}
+
+.loginLeftContent {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.loginLogo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.loginLogoIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #fff;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.loginLogoIcon svg {
+  width: 20px;
+  height: 20px;
+  color: #f97316;
+  fill: currentColor;
+}
+
+.loginLogoText h1 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+.loginLogoText p {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.loginLeft h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  color: #fff;
+}
+
+.loginSupport {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+}
+
+.loginSupport i {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+.loginSupport p:first-child {
+  font-weight: 500;
+  color: #fff;
+}
+
+.loginSupport p:last-child {
+  font-size: 0.75rem;
+}
+
+/* ===== Правая панель ===== */
+.loginRight {
+  width: 100%;
+  background: #fff;
+  padding: 2rem;
+  display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: 38px;
-  width: 80%;
-  max-width: 500px;
- background-color: #f3f6f8;
-  border-radius: 12px;
-  border: 1px solid var(--border);
 }
 
-.loginCard h2 {
-  margin-top: 12px;
-  transition: font-size 0.7s ease;
-  font-size: 22px;
-  color :var(--text);
+@media (min-width: 1024px) {
+  .loginRight {
+    width: 60%;
+    padding: 2.5rem;
+  }
 }
 
-
-.loginField {
-    width:80%;
-    margin-bottom: 16px;
+.loginRightInner {
+  max-width: 24rem;
+  margin: 0 auto;
+  width: 100%;
 }
 
-.loginInput {
-  flex: 1;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  font-size: 16px;
-  background: var(--social-bg);
-  color: var(--text-h);
+/* Заголовок формы */
+.loginFormHeader {
+  margin-bottom: 1.5rem;
+}
+
+.loginFormHeader h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.25rem;
+}
+
+.loginFormHeader p {
+  color: #6b7280;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Поля формы */
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
   outline: none;
-  font-style: italic;
-  min-height: 50px;
-  resize: none;
-
-  &:focus {
-    border-color: var(--text);
-  }
-
-  &::placeholder {
-    color: var(--text-h6);
-  }
-
-  &:hover {
-    box-shadow: var(--shadow);
-  }
+  box-sizing: border-box;
+  background: #fff;
+  transition: border-color 0.15s;
 }
 
-.loginButtons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  width: 80%;
-  margin-bottom: 25px;
+.formGroup input:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
 }
 
-.loginButton {
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  border-radius: 50px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
+/* Password input wrapper */
+.passwordWrapper {
+  position: relative;
+}
+
+.passwordWrapper input {
+  padding-right: 2.5rem;
+}
+
+.passwordToggle {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
   cursor: pointer;
-  flex: 1;
-  max-width: 220px;
-  white-space: nowrap;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+}
 
-  &:hover {
-    border-color: var(--text-h);
-    background: var(--text-h);
+.passwordToggle i {
+  font-size: 1rem;
+}
+
+/* Кнопка входа */
+.loginSubmit {
+  margin-top: 1rem;
+}
+
+.loginSubmit button {
+  width: 100%;
+  background: #f97316;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.625rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginSubmit button:hover {
+  background: #ea580c;
+}
+
+.loginSubmit button i {
+  margin-right: 0.5rem;
+}
+
+/* Ссылка на регистрацию */
+.registerLink {
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.registerLink p:first-child {
+  color: #6b7280;
+  margin: 0 0 0.25rem;
+  font-size: 0.8rem;
+}
+
+.registerLink p:last-child {
+  color: #f97316;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 0;
+  display: inline;
+  font-size: 0.8rem;
+}
+
+.registerLink p:last-child:hover {
+  color: #ea580c;
+}
+
+/* Мобильный логотип */
+.loginMobileHeader {
+  display: none;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1023px) {
+  .loginMobileHeader {
+    display: block;
   }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+}
+
+.loginMobileLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.loginMobileLogoIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #f97316;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.loginMobileLogoIcon i {
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.loginMobileLogoText h1 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.loginMobileLogoText p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.loginMobileHeader h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
 }

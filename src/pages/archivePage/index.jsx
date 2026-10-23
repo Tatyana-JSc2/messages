@@ -54,7 +54,7 @@ function ArchivePage() {
                     <td>{index + 1}</td>
                     <td>{msg.text}</td>
                     <td>{msg.phones.join('; ')}</td>
-                    <td>{msg.contactNames.join('; ')}</td>
+                    <td>{msg.contactNames ? msg.contactNames.join('; ') : 'Неизвестный'}</td>
                     <td>{msg.date}</td>
                     <td>{msg.time}</td>
                     <td>

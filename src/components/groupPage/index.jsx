@@ -39,7 +39,7 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
         const newContacts = pendingGroupContacts.filter((c) => !existingPhones.has(c.phone));
         if (newContacts.length > 0) {
           const contactNames = newContacts
-            .map((c) => `${c.last_name} ${c.first_name} ${c.middle_name}`.trim())
+            .map((c) => c.name || c.phone)
             .join(', ');
           setSuccessMessage(`Контакт(ы) ${contactNames} добавлен(ы) в группу "${addedGroup.name}"`);
           setTimeout(() => setSuccessMessage(null), 5000);
@@ -183,7 +183,7 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
     if (!contacts || contacts.length === 0) return '';
     return contacts
       .map((c) => {
-        const name = [c.last_name, c.first_name, c.middle_name].filter(Boolean).join(' ');
+        const name = c.name || '';
         return `${name} — ${c.phone}`;
       })
       .join('\n');
@@ -215,11 +215,7 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
                         )}
                         {groups.map((group) => (
                           <li
-                            className={`${editingGroupId === group.id ? 'editing' : ''}`}
-                            style={{
-                              backgroundColor: selectedGroupId === group.id ? 'rgb(188, 195, 195)' : '',
-                              color: selectedGroupId === group.id ? 'var(--text-h7)' : '',
-                            }}
+                            className={`${editingGroupId === group.id ? 'editing' : ''} ${selectedGroupId === group.id ? 'selected' : ''}`}
                             key={group.id}
                             onClick={() => handleSelectGroup(group.id)}
                           >
@@ -238,7 +234,7 @@ function GroupPage({ groups, setGroups, groupsLoading, setSelectedPhone, setActi
                                     {editForm.contacts.map((contact, idx) => (
                                       <div key={idx} className="groupContactItem">
                                         <span className="groupContactName">
-                                          {[contact.last_name, contact.first_name, contact.middle_name].filter(Boolean).join(' ')}
+                                          {contact.name}
                                         </span>
                                         <span className="groupContactPhone">{contact.phone}</span>
                                         <button

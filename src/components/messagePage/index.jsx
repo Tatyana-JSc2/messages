@@ -34,7 +34,10 @@ function MessagePage({ setSelectedMessageText, setActiveComponent, isActive }) {
 
   const handleAdd = () => {
     const text = newText.trim();
-    if (!text) return;
+    if (!text) {
+      alert('Введите текст');
+      return;
+    }
     const item = { id: generateId(), text };
     setTemplates(prev => [...prev, item]);
     setNewText('');
@@ -87,10 +90,6 @@ function MessagePage({ setSelectedMessageText, setActiveComponent, isActive }) {
                 {templates.map((template) => (
                   <li
                     className={idChange === template.id ? 'selected' : ''}
-                    style={{
-                      backgroundColor: template.id === idChange ? 'rgb(188, 195, 195)' : '',
-                      color: template.id === idChange ? 'var(--text-h7)' : ''
-                    }}
                     key={template.id}
                     onClick={() => handleSelect(template)}
                   >

@@ -4,18 +4,17 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getContacts, addContact } from '../../api';
 
-function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent, isActive, addingToGroupId, setPendingGroupContacts, groupContacts: groupContactsProp, setGroupContacts: setGroupContactsProp }) {
+function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent, isActive, addingToGroupId, setPendingGroupContacts, groupContacts: groupContactsProp }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingPhone, setEditingPhone] = useState(null);
-  const [editForm, setEditForm] = useState({ phone: '', first_name: '', last_name: '', middle_name: '' });
-  const [newContact, setNewContact] = useState({ phone: '', first_name: '', last_name: '', middle_name: '' });
+  const [editForm, setEditForm] = useState({ phone: '', name: '' });
+  const [newContact, setNewContact] = useState({ phone: '', name: '' });
   const [showAddForm, setShowAddForm] = useState(false);
   const [title, setTitle] = useState('Список контактов');
 
   const groupContacts = groupContactsProp || [];
-  const setGroupContacts = setGroupContactsProp || (() => {});
 
   const isGroupEditMode = !!addingToGroupId;
 
@@ -27,18 +26,13 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
         if (!cancelled) {
           const contacts = data.map((c, index) => {
             const phone = c.phones?.[0] || '';
-            const parts = (c.name || '').split(' ').filter(Boolean);
-            const [first_name, middle_name, ...rest] = parts;
-            const last_name = rest.join(' ') || '';
             return {
               phone,
-              first_name: first_name || '',
-              last_name,
-              middle_name: middle_name || '',
+              name: c.name || '',
               id: `${phone}-${index}`,
               active: false,
             };
-          }).sort((a, b) => (a.last_name || '').localeCompare(b.last_name || '', 'ru'));
+          });
           setItems(contacts);
         }
       })
@@ -102,39 +96,31 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
     setEditingPhone(contact.phone);
     setEditForm({
       phone: contact.phone,
-      first_name: contact.first_name || '',
-      last_name: contact.last_name || '',
-      middle_name: contact.middle_name || '',
+      name: contact.name || '',
     });
   };
 
   const handleSaveEdit = async () => {
     if (!editForm.phone.trim()) return;
+    if (!editForm.name.trim()) {
+      alert('Укажите имя контакта');
+      return;
+    }
     try {
       const updated = {
         phone: editForm.phone,
-        first_name: editForm.first_name || null,
-        last_name: editForm.last_name || null,
-        middle_name: editForm.middle_name || null,
+        name: editForm.name,
       };
-      const results = await addContact(updated);
-      if (results.length === 0) {
-        alert('Контакт не обновлен: проверьте данные');
-        return;
-      }
-      const created = results[0];
-      const parts = (created.name || '').split(' ').filter(Boolean);
-      const [first_name, middle_name, ...rest] = parts;
-      const last_name = rest.join(' ') || '';
+      const result = await addContact(updated);
       setItems(prev =>
         prev.map(item =>
           item.phone === editForm.phone
-            ? { ...item, phone: created.phone, first_name, last_name, middle_name: middle_name || '', id: created.phone, active: item.active }
+            ? { ...item, phone: result.phone, name: result.name || editForm.name, id: result.phone, active: item.active }
             : item
         )
       );
       setEditingPhone(null);
-      setEditForm({ phone: '', first_name: '', last_name: '', middle_name: '' });
+      setEditForm({ phone: '', name: '' });
     } catch (err) {
       console.error('Ошибка при обновлении контакта:', err);
       if (err.message.includes('500')) {
@@ -147,7 +133,7 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
 
   const handleCancelEdit = () => {
     setEditingPhone(null);
-    setEditForm({ phone: '', first_name: '', last_name: '', middle_name: '' });
+    setEditForm({ phone: '', name: '' });
   };
 
   const handleDeleteContact = async (phone) => {
@@ -185,7 +171,7 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
   const handleCancelAddForm = () => {
     setShowAddForm(false);
     setTitle('Список контактов');
-    setNewContact({ phone: '', first_name: '', last_name: '', middle_name: '' });
+    setNewContact({ phone: '', name: '' });
   };
 
   const handleConfirmAdd = async () => {
@@ -193,41 +179,23 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
       alert('Укажите номер телефона');
       return;
     }
-    if (!newContact.first_name.trim()) {
-      alert('Укажите имя');
-      return;
-    }
-    if (!newContact.last_name.trim()) {
-      alert('Укажите фамилию');
-      return;
-    }
-    if (!newContact.middle_name.trim()) {
-      alert('Укажите отчество');
+    if (!newContact.name.trim()) {
+      alert('Укажите имя контакта');
       return;
     }
     try {
-      const contact = { phone: newContact.phone };
-      if (newContact.first_name) contact.first_name = newContact.first_name;
-      if (newContact.last_name) contact.last_name = newContact.last_name;
-      if (newContact.middle_name) contact.middle_name = newContact.middle_name;
-      const results = await addContact(contact);
-      if (results.length === 0) {
-        alert('Контакт не добавлен: проверьте данные');
-        return;
-      }
-      const created = results[0];
-      const parts = (created.name || '').split(' ').filter(Boolean);
-      const [first_name, middle_name, ...rest] = parts;
-      const last_name = rest.join(' ') || '';
+      const contact = {
+        phone: newContact.phone,
+        name: newContact.name,
+      };
+      const result = await addContact(contact);
       setItems(prev => [...prev, {
-        phone: created.phone,
-        first_name: first_name || '',
-        last_name,
-        middle_name: middle_name || '',
-        id: created.phone,
+        phone: result.phone,
+        name: result.name || newContact.name,
+        id: result.phone,
         active: false,
       }]);
-      setNewContact({ phone: '', first_name: '', last_name: '', middle_name: '' });
+      setNewContact({ phone: '', name: '' });
       setShowAddForm(false);
       setTitle('Список контактов');
     } catch (err) {
@@ -259,7 +227,7 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
                           {groupContacts.map((contact, idx) => (
                             <div key={idx} className="groupContactItem">
                               <span className="groupContactName">
-                                {[contact.last_name, contact.first_name, contact.middle_name].filter(Boolean).join(' ')}
+                                {contact.name}
                               </span>
                               <span className="groupContactPhone">{contact.phone}</span>
                             </div>
@@ -274,11 +242,7 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
                         )}
                         {items.map((item) => (
                           <li
-                            className={`${editingPhone === item.phone ? 'editing' : ''}`}
-                            style={{
-                              backgroundColor: item.active ? 'rgb(188, 195, 195)' : '',
-                              color: item.active ? 'var(--text-h7)' : ''
-                            }}
+                            className={`${editingPhone === item.phone ? 'editing' : ''} ${item.active ? 'selected' : ''}`}
                             key={item.id}
                             onClick={() => changeItemActive(item.id)}
                           >
@@ -287,25 +251,9 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
                                 <input
                                   className="editInput"
                                   type="text"
-                                  placeholder="Фамилия"
-                                  value={editForm.last_name}
-                                  onChange={(e) => setEditField('last_name', e.target.value)}
-                                  onClick={(e) => e.stopPropagation()}
-                                />
-                                <input
-                                  className="editInput"
-                                  type="text"
-                                  placeholder="Имя"
-                                  value={editForm.first_name}
-                                  onChange={(e) => setEditField('first_name', e.target.value)}
-                                  onClick={(e) => e.stopPropagation()}
-                                />
-                                <input
-                                  className="editInput"
-                                  type="text"
-                                  placeholder="Отчество"
-                                  value={editForm.middle_name}
-                                  onChange={(e) => setEditField('middle_name', e.target.value)}
+                                  placeholder="Имя контакта"
+                                  value={editForm.name}
+                                  onChange={(e) => setEditField('name', e.target.value)}
                                   onClick={(e) => e.stopPropagation()}
                                 />
                                 <input
@@ -334,9 +282,7 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
                             ) : (
                               <>
                                 <span className="templateText">
-                                  <span>{item.last_name || '—'}</span>
-                                  <span>{item.first_name || '—'}</span>
-                                  <span>{item.middle_name || '—'}</span>
+                                  <span>{item.name || '—'}</span>
                                   <span className="templatePhone">{item.phone}</span>
                                 </span>
                                 <button
@@ -379,23 +325,9 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
                       <input
                         className="newTextInput"
                         type="text"
-                        placeholder="Имя"
-                        value={newContact.first_name}
-                        onChange={(e) => setNewField('first_name', e.target.value)}
-                      />
-                      <input
-                        className="newTextInput"
-                        type="text"
-                        placeholder="Фамилия"
-                        value={newContact.last_name}
-                        onChange={(e) => setNewField('last_name', e.target.value)}
-                      />
-                      <input
-                        className="newTextInput"
-                        type="text"
-                        placeholder="Отчество"
-                        value={newContact.middle_name}
-                        onChange={(e) => setNewField('middle_name', e.target.value)}
+                        placeholder="Имя контакта"
+                        value={newContact.name}
+                        onChange={(e) => setNewField('name', e.target.value)}
                       />
                       <div className="addFormButtons">
                         <button className="addButton confirmButton" onClick={handleConfirmAdd}>

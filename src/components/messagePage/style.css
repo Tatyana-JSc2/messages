@@ -119,11 +119,11 @@ li {
 
     &:hover {
       box-shadow: var(--shadow);
-      /* background-color: var(--social-bg) */
     }
 
     &.selected {
-      box-shadow: var(--social-bg);
+      background: var(--social-bg1);
+      color: var(--text-h7);
       white-space: normal;
       word-wrap: break-word;
     }
@@ -155,7 +155,7 @@ li {
       }
 
       &.saveButton {
-        color: #4ade80;
+        color: var(--text-h3);
       }
 
       &.cancelButton {

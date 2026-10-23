@@ -321,7 +321,8 @@
     }
 
     &.selected {
-      box-shadow: var(--social-bg);
+      background: var(--social-bg1);
+      color: var(--text-h7);
       white-space: normal;
       word-wrap: break-word;
     }
@@ -345,6 +346,7 @@
 
     .templatePhone {
       white-space: nowrap;
+      color: var(--text-h7);
     }
 
     .editButton {
@@ -366,7 +368,7 @@
       }
 
       &.saveButton {
-        color: #4ade80;
+        color: var(--text-h3);
       }
 
       &.cancelButton {

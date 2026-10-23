@@ -1,53 +1,88 @@
-const API_URL = '/api/v1/notifications/sms'
+const API_URL = '/api/v1';
 
-// --- Auth stubs (заглушки до подключения реального бэкенда) ---
-
-const registeredUsers = [];
+// --- Auth ---
 
 export async function loginApi(login, password) {
-  // Заглушка: проверяем по хардкод-учётке или по зарегистрированным
-  if (login === 'сац' && password === '1234') {
-    return { success: true, user: { name: 'Disp_ca', login } };
-  }
-  const found = registeredUsers.find(
-    (u) => u.login === login && u.password === password
-  );
-  if (found) {
-    return { success: true, user: { name: found.name, login: found.login } };
-  }
-  const error = new Error('Неверный логин или пароль');
-  error.status = 401;
-  throw error;
-}
-
-export async function registerApi(name, login, password) {
-  // Заглушка: сохраняем в локальный массив
-  const exists = registeredUsers.some((u) => u.login === login);
-  if (exists) {
-    const error = new Error('Пользователь с таким логином уже существует');
-    error.status = 409;
-    throw error;
-  }
-  registeredUsers.push({ name, login, password });
-  return { success: true, user: { name, login } };
-}
-
-export async function sendSms(phones, message) {
-  const response = await fetch(API_URL, {
+  const body = JSON.stringify({ login, pass: password });
+  const response = await fetch(`${API_URL}/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phones, message }),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-app': 'sms_sac',
+    },
+    body,
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.err_msg || `HTTP ${response.status}`);
   }
 
+  return await response.json();
+}
+
+export async function registerApi(name, login, password) {
+  const body = JSON.stringify({
+    login,
+    pass: password,
+    first_name: name,
+    surname: '',
+    middle_name: '',
+    fil: '',
+    email: '',
+  });
+  const response = await fetch(`${API_URL}/registration`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-app': 'sms_sac',
+    },
+    body,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.err_msg || `HTTP ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+export async function logoutApi() {
+  const response = await fetch(`${API_URL}/logout`, {
+    method: 'GET',
+    headers: { 'x-app': 'sms_sac' },
+  });
+  return response.ok;
+}
+
+export async function getCurrentUser() {
+  const response = await fetch(`${API_URL}/cur_user`, {
+    method: 'GET',
+    headers: { 'x-app': 'sms_sac' },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
   return response.json();
 }
 
+// --- SMS (заглушка: бэкенд не имеет REST-эндпоинта для отправки) ---
+
+export async function sendSms(phones, message) {
+  // Бэкенд отправляет SMS через task queue / sms gate,
+  // REST-эндпоинта для прямой отправки нет.
+  // Заглушка: имитируем успешную отправку.
+  console.log(`[SMS stub] Отправка "${message}" на ${phones}`);
+  return { success: true };
+}
+
+// --- Contacts ---
+
 export async function getContacts() {
-  const response = await fetch(`/api/v1/notifications/sms/contacts`);
+  const response = await fetch(`${API_URL}/sms_sac/contacts`, {
+    headers: { 'x-app': 'sms_sac' },
+  });
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
   }
@@ -55,10 +90,20 @@ export async function getContacts() {
 }
 
 export async function addContact(contact) {
-  const response = await fetch(`${API_URL}/contacts`, {
+  const rawPhones = contact.phones || contact.phone || '';
+  const phones = Array.isArray(rawPhones)
+    ? rawPhones.filter(p => p && p.trim())
+    : rawPhones && rawPhones.trim() ? [rawPhones.trim()] : [];
+  const response = await fetch(`${API_URL}/sms_sac/contacts`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify([contact]),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-app': 'sms_sac',
+    },
+    body: JSON.stringify({
+      name: contact.name,
+      phones,
+    }),
   });
   if (!response.ok) {
     const text = await response.text();
@@ -68,11 +113,94 @@ export async function addContact(contact) {
   return response.json();
 }
 
-export async function deleteContact(phone) {
-  const response = await fetch(`${API_URL}/contacts`, {
+export async function updateContact(id, contact) {
+  const rawPhones = contact.phones || contact.phone || '';
+  const phones = Array.isArray(rawPhones)
+    ? rawPhones.filter(p => p && p.trim())
+    : rawPhones && rawPhones.trim() ? [rawPhones.trim()] : [];
+  const response = await fetch(`${API_URL}/sms_sac/contacts/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-app': 'sms_sac',
+    },
+    body: JSON.stringify({
+      name: contact.name,
+      phones,
+    }),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`HTTP ${response.status}: ${text}`);
+  }
+  return response.json();
+}
+
+export async function deleteContact(id) {
+  const response = await fetch(`${API_URL}/sms_sac/contacts/${id}`, {
     method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone }),
+    headers: { 'x-app': 'sms_sac' },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+// --- Contact Groups ---
+
+export async function getGroups() {
+  const response = await fetch(`${API_URL}/sms_sac/contact_groups`, {
+    headers: { 'x-app': 'sms_sac' },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function addGroup(group) {
+  const response = await fetch(`${API_URL}/sms_sac/contact_groups`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-app': 'sms_sac',
+    },
+    body: JSON.stringify({
+      name: group.name,
+      contact_ids: group.contact_ids || [],
+    }),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`HTTP ${response.status}: ${text}`);
+  }
+  return response.json();
+}
+
+export async function updateGroup(id, group) {
+  const response = await fetch(`${API_URL}/sms_sac/contact_groups/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-app': 'sms_sac',
+    },
+    body: JSON.stringify({
+      name: group.name,
+      contact_ids: group.contact_ids || [],
+    }),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`HTTP ${response.status}: ${text}`);
+  }
+  return response.json();
+}
+
+export async function deleteGroup(id) {
+  const response = await fetch(`${API_URL}/sms_sac/contact_groups/${id}`, {
+    method: 'DELETE',
+    headers: { 'x-app': 'sms_sac' },
   });
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
