@@ -21,6 +21,7 @@ export async function loginApi(login, password) {
   return await response.json();
 }
 
+  
 export async function registerApi(name, login, password) {
   const body = JSON.stringify({
     login,
@@ -67,14 +68,29 @@ export async function getCurrentUser() {
   return response.json();
 }
 
-// --- SMS (заглушка: бэкенд не имеет REST-эндпоинта для отправки) ---
+// --- SMS ---
 
-export async function sendSms(phones, message) {
-  // Бэкенд отправляет SMS через task queue / sms gate,
-  // REST-эндпоинта для прямой отправки нет.
-  // Заглушка: имитируем успешную отправку.
-  console.log(`[SMS stub] Отправка "${message}" на ${phones}`);
-  return { success: true };
+export async function sendSms(phones, text, contactIds = [], groupIds = []) {
+  const response = await fetch(`${API_URL}/sms_sac/sms`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-app': 'sms_sac',
+    },
+    body: JSON.stringify({
+      text,
+      contact_ids: contactIds,
+      group_ids: groupIds,
+      phones: Array.isArray(phones) ? phones : [phones],
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.err_msg || `HTTP ${response.status}`);
+  }
+
+  return await response.json();
 }
 
 // --- Contacts ---

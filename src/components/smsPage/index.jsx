@@ -102,25 +102,19 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
     const successPhones = [];
     const failedPhones = [];
 
-    for (const phone of phones) {
-      try {
-        await sendSms(phone, messageText);
-        successPhones.push(phone);
-      } catch {
-        failedPhones.push(phone);
-      }
-    }
-
-    if (failedPhones.length > 0) {
-      alert(`Ошибка отправки сообщения на номер ${failedPhones.join(', ')}`);
-    }
-
-    if (successPhones.length > 0) {
-      alert(`Сообщения доставлены на номер ${successPhones.join(', ')}`);
+    try {
+      await sendSms(phones, messageText);
+      phones.forEach(p => successPhones.push(p));
+    } catch {
+      phones.forEach(p => failedPhones.push(p));
     }
 
     if (failedPhones.length > 0) {
       alert(`Не удалось доставить сообщение на номер ${failedPhones.join(', ')}`);
+    }
+
+    if (successPhones.length > 0) {
+      alert(`Сообщения доставлены на номер ${successPhones.join(', ')}`);
     }
 
     setMessageText('');
