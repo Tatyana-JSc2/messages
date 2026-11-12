@@ -119,6 +119,6 @@ p {
 
 section {
   background:white;
-  border: 1px solid #e3e9ed;
+  /* border: 1px solid #e3e9ed; */
   border-radius: 13px;
 }

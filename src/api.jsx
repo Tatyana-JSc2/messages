@@ -223,3 +223,50 @@ export async function deleteGroup(id) {
   }
   return response.json();
 }
+
+// --- Archive ---
+
+export async function saveArchive(message) {
+  const response = await fetch(`${API_URL}/sms_sac/archive`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-app': 'sms_sac',
+    },
+    body: JSON.stringify({
+      text: message.text,
+      phones: message.phones,
+      contact_names: message.contactNames,
+      date: message.date,
+      time: message.time,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.err_msg || `HTTP ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+export async function getArchive({ limit = 50, offset = 0, dateFrom, dateTo } = {}) {
+  const params = new URLSearchParams({
+    limit: String(limit),
+    offset: String(offset),
+  });
+
+  if (dateFrom) params.set('date_from', dateFrom);
+  if (dateTo) params.set('date_to', dateTo);
+
+  const response = await fetch(`${API_URL}/sms_sac/archive?${params}`, {
+    method: 'GET',
+    headers: { 'x-app': 'sms_sac' },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  return response.json();
+}

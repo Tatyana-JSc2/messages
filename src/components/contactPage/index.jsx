@@ -2,13 +2,14 @@ import './style.css'
 // import Contacts from '../../dataContacts';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getContacts, addContact } from '../../api';
+import { getContacts, addContact, updateContact, deleteContact } from '../../api';
 
 function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent, isActive, addingToGroupId, setPendingGroupContacts, groupContacts: groupContactsProp }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingPhone, setEditingPhone] = useState(null);
+  const [originalPhone, setOriginalPhone] = useState(null);
   const [editForm, setEditForm] = useState({ phone: '', name: '' });
   const [newContact, setNewContact] = useState({ phone: '', name: '' });
   const [showAddForm, setShowAddForm] = useState(false);
@@ -98,6 +99,7 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
       phone: contact.phone,
       name: contact.name || '',
     });
+    setOriginalPhone(contact.phone);
   };
 
   const handleSaveEdit = async () => {
@@ -107,20 +109,20 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
       return;
     }
     try {
-      const updated = {
+      const result = await updateContact(originalPhone, {
         phone: editForm.phone,
         name: editForm.name,
-      };
-      const result = await addContact(updated);
+      });
       setItems(prev =>
         prev.map(item =>
-          item.phone === editForm.phone
+          item.phone === originalPhone
             ? { ...item, phone: result.phone, name: result.name || editForm.name, id: result.phone, active: item.active }
             : item
         )
       );
       setEditingPhone(null);
       setEditForm({ phone: '', name: '' });
+      setOriginalPhone(null);
     } catch (err) {
       console.error('Ошибка при обновлении контакта:', err);
       if (err.message.includes('500')) {
@@ -138,13 +140,8 @@ function ContactPage({ /*setIndexContact,*/ setSelectedPhone, setActiveComponent
 
   const handleDeleteContact = async (phone) => {
     try {
-      const contact = { phone };
-      const results = await addContact(contact);
-      if (results.length === 0) {
-        setItems(prev => prev.filter(item => item.phone !== phone));
-      } else {
-        alert('Контакт не удален: у контакта должны быть пустые поля имени');
-      }
+      await deleteContact(phone);
+      setItems(prev => prev.filter(item => item.phone !== phone));
     } catch (err) {
       console.error('Ошибка при удалении контакта:', err);
       if (err.message.includes('500')) {

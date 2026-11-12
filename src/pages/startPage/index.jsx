@@ -5,54 +5,7 @@ import ContactPage from '../../components/contactPage';
 import GroupPage from '../../components/groupPage';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getContacts } from '../../api';
-
-// Заглушка API для групп
-const mockGroups = [
-  {
-    id: '1',
-    name: 'Семья',
-    contacts: [
-      { phone: '+79001111111', first_name: 'Иван', last_name: 'Иванов', middle_name: 'Петрович' },
-      { phone: '+79002222222', first_name: 'Мария', last_name: 'Иванова', middle_name: 'Сергеевна' },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Работа',
-    contacts: [
-      { phone: '+79003333333', first_name: 'Алексей', last_name: 'Петров', middle_name: 'Иванович' },
-    ],
-  },
-];
-
-function getGroups() {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(mockGroups), 300);
-  });
-}
-
-function addGroup(group) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ id: Date.now().toString(), name: group.name, contacts: [] });
-    }, 300);
-  });
-}
-
-function updateGroup(group) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(group), 300);
-  });
-}
-
-function deleteGroup(id) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(id), 300);
-  });
-}
-
- 
+import { getContacts, getGroups, addGroup as addGroupApi, updateGroup as updateGroupApi, deleteGroup as deleteGroupApi } from '../../api';
 
 function StartPage() {
    const [indexMessage, setIndexMessage] = useState(null);
@@ -68,19 +21,34 @@ function StartPage() {
    const [contacts, setContacts] = useState([]);
 
    useEffect(() => {
-      let cancelled = false;
-      getGroups()
-        .then((data) => {
-          if (!cancelled) setGroups(data);
-        })
-        .catch(() => {})
-        .finally(() => {
-          if (!cancelled) setGroupsLoading(false);
-        });
-      return () => { cancelled = true; };
-    }, []);
+     let cancelled = false;
+     getGroups()
+       .then((data) => {
+         if (!cancelled) setGroups(data);
+       })
+       .catch((err) => {
+         if (!cancelled) console.error('Ошибка при загрузке групп:', err);
+       })
+       .finally(() => {
+         if (!cancelled) setGroupsLoading(false);
+       });
+       return () => { cancelled = true; };
+     }, []);
 
-    useEffect(() => {
+   // Обёртки над реальным API
+   const realAddGroup = async (group) => {
+     return await addGroupApi({ name: group.name, contact_ids: [] });
+   };
+
+   const realUpdateGroup = async (group) => {
+     return await updateGroupApi(group.id, { name: group.name, contact_ids: [] });
+   };
+
+   const realDeleteGroup = async (id) => {
+     return await deleteGroupApi(id);
+   };
+
+   useEffect(() => {
       let cancelled = false;
       getContacts()
         .then((data) => {
@@ -207,9 +175,9 @@ function StartPage() {
                     pendingGroupContacts={pendingGroupContacts}
                     setPendingGroupContacts={setPendingGroupContacts}
                     setAddingToGroupId={setAddingToGroupId}
-                    addGroup={addGroup}
-                    updateGroup={updateGroup}
-                    deleteGroup={deleteGroup}
+                    addGroup={realAddGroup}
+                    updateGroup={realUpdateGroup}
+                    deleteGroup={realDeleteGroup}
                     contacts={contacts}
                     isActive={true}
                   />

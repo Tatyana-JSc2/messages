@@ -116,11 +116,7 @@ function LoginPage({ setIsAuthenticated }) {
                 </button>
               </div>
 
-              {/* Ссылка на регистрацию */}
-              <div className="registerLink">
-                <p>Еще нет учетной записи?</p>
-                <p onClick={() => navigate('/register')}>Зарегистрироваться</p>
-              </div>
+
             </div>
           </div>
         </div>

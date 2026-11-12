@@ -1,7 +1,7 @@
 import './style.css'
 import { useState, useEffect, useRef } from 'react';
 // import Contacts from '../../dataContacts';
-import { sendSms, getContacts } from '../../api';
+import { sendSms, getContacts, saveArchive } from '../../api';
 
 const STORAGE_KEY = 'sentMessages';
 
@@ -22,6 +22,25 @@ function saveSentMessage(message) {
 
 function parsePhoneNumbers(phoneString) {
   return phoneString.split(';').map(p => p.trim()).filter(p => p.length > 0);
+}
+
+function normalizePhone(phone) {
+  let digits = phone.replace(/\D/g, '');
+  if (digits.length === 11 && digits.startsWith('8')) {
+    digits = '7' + digits.slice(1);
+  } else if (digits.length === 10) {
+    digits = '7' + digits;
+  }
+  if (digits.length === 11 && digits.startsWith('7')) {
+    return '+' + digits;
+  }
+  return phone;
+}
+
+function normalizePhoneNumbers(phoneString) {
+  return parsePhoneNumbers(phoneString)
+    .map(normalizePhone)
+    .filter(p => p.startsWith('+7') && p.replace(/\D/g, '').length === 11);
 }
 
 function buildDisplayName(contact) {
@@ -65,7 +84,8 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
   const findContactNames = (phones) => {
     const names = [];
     phones.forEach(phone => {
-      const contact = contacts.find(c => c.phone === phone);
+      const normalizedPhone = normalizePhone(phone);
+      const contact = contacts.find(c => normalizePhone(c.phone || '') === normalizedPhone);
       if (contact) {
         names.push(buildDisplayName(contact));
       } else {
@@ -81,7 +101,7 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
       return;
     }
 
-    const phones = parsePhoneNumbers(phoneNumber);
+    const phones = normalizePhoneNumbers(phoneNumber);
     const contactNames = findContactNames(phones);
     const now = new Date();
     const dateStr = now.toLocaleDateString('ru-RU');
@@ -105,6 +125,7 @@ function SmsPage({setIndexMessage, setIndexContact, selectedMessageText, selecte
     try {
       await sendSms(phones, messageText);
       phones.forEach(p => successPhones.push(p));
+      await saveArchive(sentMessage);
     } catch {
       phones.forEach(p => failedPhones.push(p));
     }
